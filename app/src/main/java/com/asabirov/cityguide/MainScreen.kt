@@ -1,6 +1,6 @@
 package com.asabirov.cityguide
 
-import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -29,16 +29,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
@@ -67,8 +69,9 @@ fun MainScreen() {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         var selectedItemIndex by rememberSaveable {
-            mutableStateOf(0)
+            mutableIntStateOf(0)
         }
+        val navController = rememberNavController()
         ModalNavigationDrawer(
             drawerContent = {
                 ModalDrawerSheet {
@@ -80,7 +83,7 @@ fun MainScreen() {
                             },
                             selected = index == selectedItemIndex,
                             onClick = {
-//                                            navController.navigate(item.route)
+                                navController.navigate((item.title))
                                 selectedItemIndex = index
                                 scope.launch {
                                     drawerState.close()
@@ -122,8 +125,18 @@ fun MainScreen() {
                         }
                     )
                 }
-            ) {
-
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    NavHost(navController = navController, startDestination = "Home") {
+                        composable("Home") { HomeScreen() }
+                        composable("Favorites") { FavoriteScreen() }
+                        composable("Settings") { SettingsScreen() }
+                    }
+                }
             }
         }
     }
