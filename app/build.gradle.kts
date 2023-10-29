@@ -76,4 +76,10 @@ dependencies {
     implementation ("com.google.dagger:hilt-android:2.48")
     ksp ("com.google.dagger:hilt-compiler:2.48")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // permissions
+    implementation ("com.google.accompanist:accompanist-permissions:0.25.0")
+
+    // location services
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
 }

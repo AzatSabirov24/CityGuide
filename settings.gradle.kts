@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "CityGuide"
 include(":app")
+include(":search")

@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,9 +46,9 @@ import kotlinx.coroutines.launch
 fun MainScreen() {
     val items = listOf(
         NavigationItem(
-            title = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
+            title = "Search",
+            selectedIcon = Icons.Filled.Search,
+            unselectedIcon = Icons.Outlined.Search,
         ),
         NavigationItem(
             title = "Favorites",
@@ -131,8 +131,8 @@ fun MainScreen() {
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    NavHost(navController = navController, startDestination = "Home") {
-                        composable("Home") { HomeScreen() }
+                    NavHost(navController = navController, startDestination = "Search") {
+                        composable("Search") { SearchScreen() }
                         composable("Favorites") { FavoriteScreen() }
                         composable("Settings") { SettingsScreen() }
                     }
