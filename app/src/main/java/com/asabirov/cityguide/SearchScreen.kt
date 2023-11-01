@@ -3,8 +3,10 @@ package com.asabirov.cityguide
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,19 +33,24 @@ import com.google.android.gms.location.LocationServices
 fun SearchScreen() {
     val context = LocalContext.current
     var location by remember { mutableStateOf("Your location") }
-
-    // Create a permission launcher
+    var cityName by remember { mutableStateOf("") }
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
-                    // Permission granted, update the location
                     getCurrentLocation(context) { lat, long ->
                         location = "Latitude: $lat, Longitude: $long"
                     }
                 }
-            })
+            }
+        )
+
+    LaunchedEffect(key1 = hasLocationPermission(context)) {
+        getCurrentCity(context) {
+            cityName = it ?: ""
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -54,12 +62,10 @@ fun SearchScreen() {
         Button(
             onClick = {
                 if (hasLocationPermission(context)) {
-                    // Permission already granted, update the location
                     getCurrentLocation(context) { lat, long ->
                         location = "Latitude: $lat, Longitude: $long"
                     }
                 } else {
-                    // Request location permission
                     requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             }
@@ -68,12 +74,13 @@ fun SearchScreen() {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = location)
+        Text(text = cityName)
     }
 }
 
 private fun getCurrentLocation(context: Context, callback: (Double, Double) -> Unit) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    if (hasLocationPermission(context))  {
+    if (hasLocationPermission(context)) {
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location ->
                 if (location != null) {
@@ -83,11 +90,17 @@ private fun getCurrentLocation(context: Context, callback: (Double, Double) -> U
                 }
             }
             .addOnFailureListener { exception ->
-                // Handle location retrieval failure
                 exception.printStackTrace()
             }
     }
+}
 
+private fun getCurrentCity(context: Context, callback: (String?) -> Unit) {
+    val locationService = LocationService(context)
+    locationService.getCurrentCity(hasLocationPermission(context)) { cityName ->
+        println("qqq ->getCurrentCity->${cityName}")
+        callback(cityName)
+    }
 }
 
 private fun hasLocationPermission(context: Context): Boolean {
