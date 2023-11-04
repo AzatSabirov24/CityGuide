@@ -7,14 +7,14 @@ plugins {
 
 android {
     namespace = "com.asabirov.cityguide"
-    compileSdk = 34
+    compileSdk = ProjectConfig.compileSdk
 
     defaultConfig {
-        applicationId = "com.asabirov.cityguide"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = ProjectConfig.appId
+        minSdk = ProjectConfig.minSdk
+        targetSdk = ProjectConfig.targetSdk
+        versionCode = ProjectConfig.versionCode
+        versionName = ProjectConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -42,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.0"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -66,12 +66,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation ("androidx.navigation:navigation-compose:2.7.4")
-
-
-//    // hilt
-//    implementation ("com.google.dagger:hilt-android:2.48")
-//    ksp ("com.google.dagger:hilt-compiler:2.48")
-//    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     hilt()
     retrofit()
