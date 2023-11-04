@@ -3,10 +3,8 @@ package com.asabirov.cityguide
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,24 +29,21 @@ import com.google.android.gms.location.LocationServices
 @Composable
 fun SearchScreen() {
     val context = LocalContext.current
-    var location by remember { mutableStateOf("Your location") }
+    var location by remember { mutableStateOf("") }
     var cityName by remember { mutableStateOf("") }
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
-                    getCurrentLocation(context) { lat, long ->
-                        location = "Latitude: $lat, Longitude: $long"
+                    getCurrentCity(context) {
+                        cityName = it ?: ""
                     }
                 }
             }
         )
-
-    LaunchedEffect(key1 = hasLocationPermission(context)) {
-        getCurrentCity(context) {
-            cityName = it ?: ""
-        }
+    var isLocationPermissionsGranted by remember {
+        mutableStateOf(false)
     }
 
     Column(
@@ -59,21 +53,15 @@ fun SearchScreen() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        isLocationPermissionsGranted = hasLocationPermission(context)
         Button(
             onClick = {
-                if (hasLocationPermission(context)) {
-                    getCurrentLocation(context) { lat, long ->
-                        location = "Latitude: $lat, Longitude: $long"
-                    }
-                } else {
-                    requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                }
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         ) {
-            Text(text = "Allow")
+            Text(text = "Use your current city")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = location)
         Text(text = cityName)
     }
 }
@@ -98,7 +86,6 @@ private fun getCurrentLocation(context: Context, callback: (Double, Double) -> U
 private fun getCurrentCity(context: Context, callback: (String?) -> Unit) {
     val locationService = LocationService(context)
     locationService.getCurrentCity(hasLocationPermission(context)) { cityName ->
-        println("qqq ->getCurrentCity->${cityName}")
         callback(cityName)
     }
 }
