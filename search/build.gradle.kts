@@ -27,5 +27,7 @@ dependencies {
     compose()
 
     junit()
+
+    // modules
     core()
 }

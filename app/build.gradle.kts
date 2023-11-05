@@ -64,5 +64,7 @@ dependencies {
     junit()
     composeTests()
 
+    // modules
+    core()
     search()
 }

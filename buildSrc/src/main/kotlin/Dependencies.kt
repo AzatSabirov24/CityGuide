@@ -87,10 +87,6 @@ fun DependencyHandler.compose() {
     debugImplementation(Dependencies.composeUiToolingPreview)
 }
 
-//fun DependencyHandler.comoseBom() {
-//
-//}
-
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltAndroid)
     ksp(Dependencies.hiltCompiler)
@@ -118,6 +114,8 @@ fun DependencyHandler.composeTests() {
     androidTestImplementation(Dependencies.composeJUnit)
     debugImplementation(Dependencies.composeUiTestManifest)
 }
+
+// modules
 
 fun DependencyHandler.core() {
     implementation(project(":core"))
