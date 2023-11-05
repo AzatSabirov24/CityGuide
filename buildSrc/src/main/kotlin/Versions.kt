@@ -27,6 +27,12 @@ object Versions {
     // navigation
     const val navigationCompose = "2.7.5"
 
+    // location services
+    const val playCervicesLocation = "21.0.1"
+
+    // google places
+    const val googlePlaces = "3.2.0"
+
     // jUnit
     const val jUnit = "4.13.2"
     const val jUnitAndroid = "1.1.5"

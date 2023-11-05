@@ -40,6 +40,12 @@ object Dependencies {
     // navigation
     const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
+    // location services
+    const val playCervicesLocation = "com.google.android.gms:play-services-location:${Versions.playCervicesLocation}"
+
+    // google places
+    const val googlePlaces = "com.google.android.libraries.places:places:${Versions.googlePlaces}"
+
     // jUnit
     const val jUnit = "junit:junit:${Versions.jUnit}"
     const val jUnitAndroid = "androidx.test.ext:junit:${Versions.jUnitAndroid}"
@@ -90,6 +96,14 @@ fun DependencyHandler.navigation() {
     implementation(Dependencies.navigationCompose)
 }
 
+fun DependencyHandler.playServicesLocation() {
+    implementation(Dependencies.playCervicesLocation)
+}
+
+fun DependencyHandler.googlePlaces() {
+    implementation(Dependencies.googlePlaces)
+}
+
 fun DependencyHandler.junit() {
     testImplementation(Dependencies.jUnit)
     androidTestImplementation(Dependencies.jUnitAndroid)
@@ -99,6 +113,10 @@ fun DependencyHandler.composeTests() {
     androidTestImplementation(platform(Dependencies.composeTestBom))
     androidTestImplementation(Dependencies.composeJUnit)
     debugImplementation(Dependencies.composeUiTestManifest)
+}
+
+fun DependencyHandler.core() {
+    implementation(project(":core"))
 }
 
 fun DependencyHandler.search() {

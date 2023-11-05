@@ -24,8 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.asabirov.search.presentation.LocationService
-import com.google.android.gms.location.LocationServices
 
 @Composable
 fun SearchScreen() {
@@ -67,25 +65,25 @@ fun SearchScreen() {
     }
 }
 
-private fun getCurrentLocation(context: Context, callback: (Double, Double) -> Unit) {
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    if (hasLocationPermission(context)) {
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    val lat = location.latitude
-                    val long = location.longitude
-                    callback(lat, long)
-                }
-            }
-            .addOnFailureListener { exception ->
-                exception.printStackTrace()
-            }
-    }
-}
+//private fun getCurrentLocation(context: Context, callback: (Double, Double) -> Unit) {
+//    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+//    if (hasLocationPermission(context)) {
+//        fusedLocationClient.lastLocation
+//            .addOnSuccessListener { location ->
+//                if (location != null) {
+//                    val lat = location.latitude
+//                    val long = location.longitude
+//                    callback(lat, long)
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                exception.printStackTrace()
+//            }
+//    }
+//}
 
 private fun getCurrentCity(context: Context, callback: (String?) -> Unit) {
-    val locationService = LocationService(context)
+    val locationService = com.asabirov.core.utils.location.LocationService(context)
     locationService.getCurrentCity(hasLocationPermission(context)) { cityName ->
         callback(cityName)
     }
