@@ -1,3 +1,4 @@
+import Versions.compose
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -31,6 +32,18 @@ class MainGradlePlugin: Plugin<Project> {
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_18
                 targetCompatibility = JavaVersion.VERSION_18
+            }
+
+            buildFeatures {
+                compose = true
+            }
+            composeOptions {
+                kotlinCompilerExtensionVersion = ProjectConfig.kotlinCompilerExtensionVersion
+            }
+            packaging {
+                resources {
+                    excludes += "/META-INF/{AL2.0,LGPL2.1}"
+                }
             }
         }
     }
