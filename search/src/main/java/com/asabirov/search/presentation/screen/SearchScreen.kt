@@ -1,4 +1,4 @@
-package com.asabirov.cityguide
+package com.asabirov.search.presentation.screen
 
 import android.Manifest
 import android.content.Context
@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.asabirov.search.presentation.LocationService
 import com.google.android.gms.location.LocationServices
 
 @Composable
