@@ -14,6 +14,7 @@ object Versions {
 
     // hilt
     const val hilt = "2.48"
+    const val hiltNavigationComposeVersion = "1.1.0"
 
     // okHttp
     const val okHttp = "5.0.0-alpha.2"

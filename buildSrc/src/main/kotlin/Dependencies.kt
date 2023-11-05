@@ -23,10 +23,13 @@ object Dependencies {
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
     const val hiltCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
     const val hiltAgp = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
+    const val hiltNavigationComposeVersion =
+        "androidx.hilt:hilt-navigation-compose:${Versions.hiltNavigationComposeVersion}"
 
     // okHttp
     const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttp}"
-    const val okHttpLoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}"
+    const val okHttpLoggingInterceptor =
+        "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}"
 
     // retrofit
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
@@ -38,10 +41,12 @@ object Dependencies {
     const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
 
     // navigation
-    const val navigationCompose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
+    const val navigationCompose =
+        "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
 
     // location services
-    const val playCervicesLocation = "com.google.android.gms:play-services-location:${Versions.playCervicesLocation}"
+    const val playCervicesLocation =
+        "com.google.android.gms:play-services-location:${Versions.playCervicesLocation}"
 
     // google places
     const val googlePlaces = "com.google.android.libraries.places:places:${Versions.googlePlaces}"
@@ -90,6 +95,7 @@ fun DependencyHandler.compose() {
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltAndroid)
     ksp(Dependencies.hiltCompiler)
+    implementation(Dependencies.hiltNavigationComposeVersion)
 }
 
 fun DependencyHandler.navigation() {

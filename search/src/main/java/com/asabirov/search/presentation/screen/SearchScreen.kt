@@ -24,12 +24,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.search.R
+import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.screen.components.SearchTextField
+import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val state = viewModel.state
     var location by remember { mutableStateOf("") }
     var cityName by remember { mutableStateOf("") }
     val requestPermissionLauncher =
@@ -60,7 +66,10 @@ fun SearchScreen() {
             onSearch = { },
             icon = {
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        viewModel.onEvent(SearchEvent.OnSearch)
+                        println("qqq ${state}")
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
