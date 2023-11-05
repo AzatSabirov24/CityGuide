@@ -17,7 +17,7 @@ object Dependencies {
     const val composeUiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
     const val composeUiToolingPreview = "androidx.compose.ui:ui-tooling-preview:${Versions.compose}"
     const val composeRuntime = "androidx.compose.runtime:runtime:${Versions.compose}"
-    const val composeBom = "androidx.compose:compose-bom:${Versions.composeBom}}"
+    const val composeBom = "androidx.compose:compose-bom:${Versions.composeBom}"
 
     // hilt
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hilt}"
@@ -86,6 +86,10 @@ fun DependencyHandler.compose() {
     implementation(platform(Dependencies.composeBom))
     debugImplementation(Dependencies.composeUiToolingPreview)
 }
+
+//fun DependencyHandler.comoseBom() {
+//
+//}
 
 fun DependencyHandler.hilt() {
     implementation(Dependencies.hiltAndroid)
