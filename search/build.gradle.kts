@@ -1,7 +1,6 @@
 plugins {
     `android-library`
     `kotlin-android`
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 apply<MainGradlePlugin>()

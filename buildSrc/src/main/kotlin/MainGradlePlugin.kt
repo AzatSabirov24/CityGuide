@@ -17,6 +17,7 @@ class MainGradlePlugin: Plugin<Project> {
             plugin("kotlin-android")
             plugin("com.google.devtools.ksp")
             plugin("dagger.hilt.android.plugin")
+            plugin("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
         }
     }
 
