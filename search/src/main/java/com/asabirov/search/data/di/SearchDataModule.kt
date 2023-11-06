@@ -28,16 +28,13 @@ object SearchDataModule {
                     level = HttpLoggingInterceptor.Level.BODY
                 }
             )
-            .addInterceptor(
-                ApiKeyInterceptor()
-            )
+            .addInterceptor(ApiKeyInterceptor())
             .build()
     }
 
     @Provides
     @Singleton
     fun provideOpenFoodApi(client: OkHttpClient): GoogleMapsApi {
-//        val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
             .baseUrl(GoogleMapsApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

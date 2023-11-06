@@ -33,7 +33,7 @@ object Dependencies {
 
     // retrofit
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
-    const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.retrofit}"
+    const val gsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
 
     // room
     const val roomRuntime = "androidx.room:room-runtime:${Versions.room}"
@@ -71,7 +71,7 @@ fun DependencyHandler.lifecycleKtx() {
 
 fun DependencyHandler.retrofit() {
     implementation(Dependencies.retrofit)
-    implementation(Dependencies.moshiConverter)
+    implementation(Dependencies.gsonConverter)
     implementation(Dependencies.okHttp)
     implementation(Dependencies.okHttpLoggingInterceptor)
 }
