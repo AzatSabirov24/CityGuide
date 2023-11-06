@@ -1,8 +1,12 @@
 package com.asabirov.core.utils.location
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Build.VERSION_CODES.TIRAMISU
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.android.datatransport.runtime.BuildConfig
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -44,5 +48,15 @@ class LocationService(private val context: Context) {
                 e.printStackTrace()
                 callback(null)
             }
+    }
+
+    fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 }

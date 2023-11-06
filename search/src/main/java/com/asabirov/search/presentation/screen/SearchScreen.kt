@@ -1,8 +1,6 @@
 package com.asabirov.search.presentation.screen
 
 import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -22,9 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.core.utils.location.LocationService
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.screen.components.SearchTextField
@@ -36,14 +33,14 @@ fun SearchScreen(
 ) {
     val context = LocalContext.current
     val state = viewModel.state
-    var location by remember { mutableStateOf("") }
+    val locationService = LocationService(context)
     var cityName by remember { mutableStateOf("") }
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
-                    getCurrentCity(context) {
+                    locationService.getCurrentCity(locationService.hasLocationPermission()) {
                         cityName = it ?: ""
                     }
                 }
@@ -56,7 +53,7 @@ fun SearchScreen(
     Column(
         modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
     ) {
-        isLocationPermissionsGranted = hasLocationPermission(context)
+        isLocationPermissionsGranted = locationService.hasLocationPermission()
         val text = remember {
             mutableStateOf("")
         }
@@ -88,21 +85,4 @@ fun SearchScreen(
             text.value = cityName
         }
     }
-}
-
-private fun getCurrentCity(context: Context, callback: (String?) -> Unit) {
-    val locationService = com.asabirov.core.utils.location.LocationService(context)
-    locationService.getCurrentCity(hasLocationPermission(context)) { cityName ->
-        callback(cityName)
-    }
-}
-
-private fun hasLocationPermission(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_COARSE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
 }
