@@ -27,7 +27,7 @@ fun SelectableButton(
     selectedTextColor: Color,
     onClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = MaterialTheme.typography.labelMedium
+    textStyle: TextStyle = MaterialTheme.typography.labelLarge
 ) {
     var isSelected by remember {
         mutableStateOf(false)
@@ -35,21 +35,22 @@ fun SelectableButton(
     Box(
        contentAlignment = Alignment.Center,
        modifier = modifier
-           .clip(RoundedCornerShape(100.dp))
+           .padding(4.dp)
+           .clip(RoundedCornerShape(80.dp))
            .border(
                width = 2.dp,
                color = color,
-               shape = RoundedCornerShape(100.dp)
+               shape = RoundedCornerShape(80.dp)
            )
            .background(
                color = if (isSelected) color else Color.Transparent,
-               shape = RoundedCornerShape(100.dp)
+               shape = RoundedCornerShape(80.dp)
            )
            .clickable {
                isSelected = !isSelected
                onClick(isSelected)
            }
-           .padding(16.dp)
+           .padding(12.dp)
     ) {
         Text(
             text = text,

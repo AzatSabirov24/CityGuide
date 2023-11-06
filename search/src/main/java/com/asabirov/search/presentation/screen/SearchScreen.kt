@@ -4,7 +4,9 @@ import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -31,6 +33,7 @@ import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.presentation.screen.components.SelectableButton
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
@@ -94,7 +97,9 @@ fun SearchScreen(
             }
         )
 
-        Row {
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().padding(8.dp)
+        ) {
             SelectableButton(
                 text = "Museums",
                 color = MaterialTheme.colorScheme.primary,
@@ -102,8 +107,61 @@ fun SearchScreen(
                 onClick = {
                     viewModel.onSelectPlace(Place.Museum)
                     viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
-                },
-                textStyle = MaterialTheme.typography.labelMedium
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
+            )
+            SelectableButton(
+                text = "Museums",
+                color = MaterialTheme.colorScheme.primary,
+                selectedTextColor = Color.White,
+                onClick = {
+                    viewModel.onSelectPlace(Place.Museum)
+                    viewModel.onEvent(SearchEvent.OnAddQuery("+museums"))
+                }
             )
         }
     }
