@@ -6,11 +6,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,7 +60,7 @@ fun SearchScreen(
             text = text,
             onValueChange = { text.value = it },
             onSearch = { },
-            icon = {
+            iconSearch = {
                 IconButton(
                     onClick = {
                         viewModel.onEvent(SearchEvent.OnSearch)
@@ -73,16 +72,21 @@ fun SearchScreen(
                         contentDescription = stringResource(id = R.string.search)
                     )
                 }
+            },
+            iconLocation = {
+                IconButton(
+                    onClick = {
+                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        text.value = cityName
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = stringResource(id = R.string.current_location)
+                    )
+                    text.value = cityName
+                }
             }
         )
-        Button(
-            onClick = {
-                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                text.value = cityName
-            }
-        ) {
-            Text(text = "Use current city")
-            text.value = cityName
-        }
     }
 }

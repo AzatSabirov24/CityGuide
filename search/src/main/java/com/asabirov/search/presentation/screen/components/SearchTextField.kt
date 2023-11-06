@@ -22,7 +22,8 @@ fun SearchTextField(
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    icon: @Composable (() -> Unit)
+    iconSearch: @Composable (() -> Unit),
+    iconLocation:  @Composable (() -> Unit)
 ) {
         val textValue = text.value
         OutlinedTextField(
@@ -43,7 +44,8 @@ fun SearchTextField(
                 .padding(2.dp)
                 .background(MaterialTheme.colorScheme.surface)
                 .fillMaxWidth(),
-            leadingIcon = icon,
+            leadingIcon = iconSearch,
+            trailingIcon = iconLocation,
             label = { Text("Your city") }
         )
 }
