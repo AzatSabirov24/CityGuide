@@ -23,29 +23,29 @@ fun SearchTextField(
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
     iconSearch: @Composable (() -> Unit),
-    iconLocation:  @Composable (() -> Unit)
+    iconLocation: @Composable (() -> Unit)
 ) {
-        val textValue = text.value
-        OutlinedTextField(
-            value = textValue,
-            onValueChange = onValueChange,
-            singleLine = true,
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    onSearch()
-                    defaultKeyboardAction(ImeAction.Search)
-                }
-            ),
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search,
-            ),
-            modifier = modifier
-                .clip(RoundedCornerShape(5.dp))
-                .padding(2.dp)
-                .background(MaterialTheme.colorScheme.surface)
-                .fillMaxWidth(),
-            leadingIcon = iconSearch,
-            trailingIcon = iconLocation,
-            label = { Text("Your city") }
-        )
+    val textValue = text.value
+    OutlinedTextField(
+        value = textValue,
+        onValueChange = onValueChange,
+        singleLine = true,
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                onSearch()
+                defaultKeyboardAction(ImeAction.Search)
+            }
+        ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search,
+        ),
+        modifier = modifier
+            .clip(RoundedCornerShape(5.dp))
+            .padding(2.dp)
+            .background(MaterialTheme.colorScheme.surface)
+            .fillMaxWidth(),
+        leadingIcon = iconSearch,
+        trailingIcon = iconLocation,
+        label = { Text("Your city") }
+    )
 }

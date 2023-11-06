@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
-import com.asabirov.search.presentation.place.Place
 import com.asabirov.search.presentation.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,9 +18,6 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     var state by mutableStateOf(SearchState())
-        private set
-
-    var place by mutableStateOf<Place>(Place.Empty)
         private set
 
     fun onEvent(event: SearchEvent) {
@@ -37,14 +33,12 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.OnAddQuery -> {
                 if (state.query.contains(event.query)) return
                 else {
-                    val newQuery = state.query + event.query
-                    println("qqq newQuery2 = ${newQuery}")
-                    state = state.copy(query = newQuery)
+                    state = state.copy(query = state.query + event.query)
                 }
             }
 
             is SearchEvent.OnRemoveQuery -> {
-
+                state = state.copy(query = state.query.replace(event.query, ""))
             }
         }
     }
@@ -54,7 +48,6 @@ class SearchViewModel @Inject constructor(
             state = state.copy(
                 isSearching = true
             )
-//            searchUseCases.searchByText("museums+in+Kazan")
             searchUseCases.searchByText(state.query)
                 .onSuccess { searchResult ->
                     println("qqq SearchViewModel->onSuccess->${searchResult.results}")
@@ -65,9 +58,5 @@ class SearchViewModel @Inject constructor(
                 }
                 .onFailure { println("qqq SearchViewModel->onFailure->${it.message}") }
         }
-    }
-
-    fun onSelectPlace(selectedPlace: Place) {
-        place = selectedPlace
     }
 }
