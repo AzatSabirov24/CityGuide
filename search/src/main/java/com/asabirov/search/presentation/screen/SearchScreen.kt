@@ -44,6 +44,11 @@ fun SearchScreen(
     val state = viewModel.state
     val locationService = LocationService(context)
     val keyboardController = LocalSoftwareKeyboardController.current
+    var isHideKeyboard by remember { mutableStateOf(false) }
+    val hideKeyboard = {
+        keyboardController?.hide()
+        isHideKeyboard = true
+    }
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
@@ -51,6 +56,7 @@ fun SearchScreen(
                 if (isGranted) {
                     locationService.getCurrentCity(locationService.hasLocationPermission()) {
                         viewModel.onEvent(SearchEvent.OnChangeCityName(it ?: ""))
+                        println("qqq ->onValueChange->${state.cityName}")
                     }
                 }
             }
@@ -70,18 +76,22 @@ fun SearchScreen(
             text = city,
             onValueChange = {
                 city.value = it
+                isHideKeyboard = false
+                viewModel.onEvent(SearchEvent.OnChangeCityName(it))
+                println("qqq ->onValueChange->${state.cityName}")
             },
             onSearch = {
-                keyboardController?.hide()
+                hideKeyboard()
                 viewModel.onEvent(SearchEvent.OnSearch)
                 viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
+                println("qqq ->onSearch->${state.cityName}")
             },
             iconSearch = {
                 IconButton(
                     onClick = {
-                        keyboardController?.hide()
                         viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
                         viewModel.onEvent(SearchEvent.OnSearch)
+                        hideKeyboard()
                     },
                 ) {
                     Icon(
@@ -102,7 +112,14 @@ fun SearchScreen(
                         contentDescription = stringResource(id = R.string.current_location)
                     )
                     city.value = state.cityName
-                    viewModel.onEvent(SearchEvent.OnAddQuery(query = "+${state.cityName}"))
+//                    viewModel.onEvent(SearchEvent.OnAddQuery(city.value))
+                }
+            },
+            hideKeyboard = isHideKeyboard,
+            onFocusChanged = { _, cityName ->
+                if (cityName.isNotBlank()) {
+                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName))
+                    viewModel.onEvent(SearchEvent.OnAddQuery(query = "+in+$cityName"))
                 }
             }
         )
@@ -112,13 +129,33 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            SetPlace(name = "Restaurants", city = city, query = "+restaurant")
-            SetPlace(name = "Museums", city = city, query = "+museums")
-            SetPlace(name = "Cinemas", city = city, query = "+Cinemas")
-            SetPlace(name = "Shopping malls", city = city, query = "+Shopping_malls")
-            SetPlace(name = "Universities", city = city, query = "+Universities")
-            SetPlace(name = "Restaurants", city = city, query = "+restaurant")
-            SetPlace(name = "Night Clubs", city = city, query = "+Night_Clubs")
+            SetPlace(name = "Restaurants", city = city, query = "+restaurant", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Museums", city = city, query = "+museums", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Cinemas", city = city, query = "+Cinemas", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Shopping malls", city = city, query = "+Shopping_malls", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Universities", city = city, query = "+Universities", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Hospitals", city = city, query = "+Hospitals", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Fast food", city = city, query = "+fast_food", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Night Clubs", city = city, query = "+Night_Clubs", onClick = {
+                hideKeyboard()
+            })
+            SetPlace(name = "Hookah places", city = city, query = "+hookah", onClick = {
+                hideKeyboard()
+            })
         }
     }
 }
@@ -128,14 +165,16 @@ private fun SetPlace(
     name: String,
     city: State<String>,
     query: String,
-    viewModel: SearchViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel(),
+    onClick: () -> Unit
 ) {
     SelectableButton(
         text = name,
         color = MaterialTheme.colorScheme.primary,
         selectedTextColor = Color.White,
         onClick = { isSelected ->
-            viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
+            onClick()
+//            viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
             if (isSelected) viewModel.onEvent(SearchEvent.OnAddQuery(query = query))
             else viewModel.onEvent(SearchEvent.OnRemoveQuery(query = query))
         }

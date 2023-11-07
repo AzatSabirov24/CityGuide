@@ -34,11 +34,13 @@ class SearchViewModel @Inject constructor(
                 if (state.query.contains(event.query)) return
                 else {
                     state = state.copy(query = state.query + event.query)
+                    println("qqq SearchViewModel->OnAddQuery->${state.query}")
                 }
             }
 
             is SearchEvent.OnRemoveQuery -> {
                 state = state.copy(query = state.query.replace(event.query, ""))
+                println("qqq SearchViewModel->OnRemoveQuery->${state.query}")
             }
         }
     }
