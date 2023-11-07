@@ -55,8 +55,8 @@ fun SearchScreen(
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
                     locationService.getCurrentCity(locationService.hasLocationPermission()) {
+                        viewModel.onEvent(SearchEvent.OnAddQuery("+in+$it" ?: ""))
                         viewModel.onEvent(SearchEvent.OnChangeCityName(it ?: ""))
-                        println("qqq ->onValueChange->${state.cityName}")
                     }
                 }
             }
@@ -112,7 +112,6 @@ fun SearchScreen(
                         contentDescription = stringResource(id = R.string.current_location)
                     )
                     city.value = state.cityName
-//                    viewModel.onEvent(SearchEvent.OnAddQuery(city.value))
                 }
             },
             hideKeyboard = isHideKeyboard,
