@@ -56,9 +56,8 @@ fun SearchScreen(
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
                     locationService.getCurrentCity(locationService.hasLocationPermission()) {
-                        viewModel.onEvent(SearchEvent.OnAddCityName(it ?: ""))
-                        viewModel.onEvent(SearchEvent.OnAddQuery("+in+${viewModel.state.cityName}"))
-                        viewModel.updateCityQuery(cityName = it ?: "")
+//                        viewModel.updateCityQuery(cityName = it ?: "")
+                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it ?: ""))
                     }
                 }
             }
@@ -74,30 +73,27 @@ fun SearchScreen(
         val city = remember {
             mutableStateOf("")
         }
-        LaunchedEffect(key1 = city){
-            viewModel.cityQuery.collectLatest {
-                city.value = it.cityName
+        val place = remember {
+            mutableStateOf("")
+        }
+        LaunchedEffect(key1 = city) {
+            viewModel.state.collectLatest {
+                city.value = it.city
             }
         }
         SearchTextField(
             text = city,
             onValueChange = {
-//                city.value = it
                 isHideKeyboard = false
-//                viewModel.onEvent(SearchEvent.OnAddCityName(it))
-                viewModel.updateCityQuery(cityName = it)
-                println("qqq ->onValueChange->${viewModel.cityQuery.value.cityName}")
+                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
             },
             onSearch = {
                 hideKeyboard()
-//                viewModel.onEvent(SearchEvent.OnSearch)
-//                viewModel.onEvent(SearchEvent.OnAddCityName(city.value))
-                println("qqq ->onSearch->${state.cityName}")
+//                println("qqq ->onSearch->${state.cityName}")
             },
-            iconSearch = {
+            iconRight = {
                 IconButton(
                     onClick = {
-//                        viewModel.onEvent(SearchEvent.OnAddCityName(city.value))
                         viewModel.onEvent(SearchEvent.OnSearch)
                         hideKeyboard()
                     },
@@ -108,43 +104,60 @@ fun SearchScreen(
                     )
                 }
             },
-            iconLocation = {
+            iconLeft = {
                 IconButton(
                     onClick = {
                         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-//                        city.value = state.cityName
                     },
                 ) {
                     Icon(
                         imageVector = Icons.Default.LocationOn,
                         contentDescription = stringResource(id = R.string.current_location)
                     )
-//                    city.value = state.cityName
                 }
             },
             hideKeyboard = isHideKeyboard,
             onFocusChanged = { _, cityName ->
-                viewModel.updateCityQuery(cityName = cityName)
-                println("qqq ->SearchScreen->${viewModel.cityQuery.value.cityName}")
-
-                if (cityName.isNotBlank()) {
-
-//                    viewModel.onEvent(SearchEvent.OnAddCityName(cityName))
-//                    if (state.query.contains("+in+")) {
-//                        val oldCity = state.query.substringAfterLast("+in+")
-//                        viewModel.onEvent(
-//                            SearchEvent.OnRemoveQuery("in+$oldCity")
-//                        )
-//                        val newQuery = state.query.replace(oldCity, cityName)
-//                        println("qqq ->newQuery->${newQuery}")
-//                        viewModel.onEvent(
-//                            SearchEvent.OnAddQuery(newQuery)
-//                        )
-//                        viewModel.onEvent(SearchEvent.OnAddQuery(query = "+in+${state.cityName}"))
-//                    } else {
-//                        viewModel.onEvent(SearchEvent.OnAddQuery(query = "+in+${state.cityName}"))
-//                    }
+                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
+                println("qqq ->SearchScreen->${viewModel.state.value.city}")
+            }
+        )
+        SearchTextField(
+            text = city,
+            onValueChange = {
+                isHideKeyboard = false
+            },
+            onSearch = {
+                hideKeyboard()
+            },
+            iconRight = {
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(SearchEvent.OnSearch)
+                        hideKeyboard()
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(id = R.string.search)
+                    )
                 }
+            },
+            iconLeft = {
+                IconButton(
+                    onClick = {
+                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOn,
+                        contentDescription = stringResource(id = R.string.current_location)
+                    )
+                }
+            },
+            hideKeyboard = isHideKeyboard,
+            onFocusChanged = { _, cityName ->
+
             }
         )
 

@@ -26,8 +26,8 @@ fun SearchTextField(
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
-    iconSearch: @Composable (() -> Unit),
-    iconLocation: @Composable (() -> Unit),
+    iconRight: @Composable (() -> Unit),
+    iconLeft: @Composable (() -> Unit),
     hideKeyboard: Boolean = false,
     onFocusChanged: (FocusState, String) -> Unit
 ) {
@@ -55,8 +55,8 @@ fun SearchTextField(
                 .background(MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
                 .onFocusChanged { onFocusChanged(it, textValue) },
-            leadingIcon = iconSearch,
-            trailingIcon = iconLocation,
+            leadingIcon = iconRight,
+            trailingIcon = iconLeft,
             label = { Text("Your city") }
         )
     }
