@@ -28,15 +28,18 @@ class SearchViewModel @Inject constructor(
                 _state.update {
                     it.copy(city = event.cityName)
                 }
+                updateQueryForSearch()
                 println("qqq SearchViewModel->onEvent->${_state.value.city}")
             }
 
             is SearchEvent.OnAddPlace -> {
                 addPlace(event.placeName)
+                updateQueryForSearch()
             }
 
             is SearchEvent.OnRemovePlace -> {
                 removePlace(event.placeName)
+                updateQueryForSearch()
             }
         }
     }
@@ -74,5 +77,12 @@ class SearchViewModel @Inject constructor(
             it.copy(places = places)
         }
         println("qqq SearchViewModel->removePlace->${state.value.places}")
+    }
+
+    private fun updateQueryForSearch() {
+        _state.update {
+            it.copy(queryForSearch = it.places.joinToString(", ") + "+in+${it.city}")
+        }
+        println("qqq SearchViewModel->updateQueryForSearch->${_state.value.queryForSearch}")
     }
 }

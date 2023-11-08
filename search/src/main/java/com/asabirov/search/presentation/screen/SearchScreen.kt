@@ -42,7 +42,6 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     val locationService = LocationService(context)
     val keyboardController = LocalSoftwareKeyboardController.current
     var isHideKeyboard by remember { mutableStateOf(false) }
@@ -121,7 +120,7 @@ fun SearchScreen(
             },
             hideKeyboard = isHideKeyboard,
             label = stringResource(id = R.string.city_label),
-            onFocusChanged = { _, cityName ->
+            onFocusChanged = { cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
                 println("qqq ->SearchScreen->${viewModel.state.value.city}")
             }
@@ -148,10 +147,7 @@ fun SearchScreen(
                 }
             },
             hideKeyboard = isHideKeyboard,
-            label = stringResource(id = R.string.place_label),
-            onFocusChanged = { _, cityName ->
-
-            }
+            label = stringResource(id = R.string.place_label)
         )
 
         FlowRow(
