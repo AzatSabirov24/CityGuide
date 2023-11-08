@@ -81,7 +81,7 @@ fun SearchScreen(
         }
         LaunchedEffect(key1 = places) {
             viewModel.state.collectLatest {
-                places.value = it.places.joinToString(", ")
+                places.value = it.places.joinToString(" ")
             }
         }
         SearchTextField(

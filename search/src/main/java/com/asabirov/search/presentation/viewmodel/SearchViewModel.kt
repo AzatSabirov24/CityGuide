@@ -97,8 +97,9 @@ class SearchViewModel @Inject constructor(
 
     private fun updateQueryForSearch() {
         _state.update {
-            it.copy(queryForSearch = it.places.joinToString(", ") + "+in+${it.city}")
+            it.copy(queryForSearch = it.places.joinToString("+") + "+in+${it.city}")
         }
+        println("qqq SearchViewModel->updateQueryForSearch->${_state.value.queryForSearch}")
     }
 
     private fun updatePlacesState() {

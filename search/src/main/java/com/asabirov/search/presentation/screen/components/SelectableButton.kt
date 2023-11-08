@@ -39,7 +39,7 @@ fun SelectableButton(
     }
     LaunchedEffect(key1 = true) {
         selectedPlaces.collectLatest {
-            isSelected = it.places.any { placeName -> placeName.contains(text) }
+            isSelected = it.places.any { placeName -> placeName.lowercase().contains(text.lowercase()) }
         }
     }
     Box(
