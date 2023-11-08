@@ -31,22 +31,13 @@ class SearchViewModel @Inject constructor(
                 println("qqq SearchViewModel->onEvent->${_state.value.city}")
             }
 
-            is SearchEvent.OnChangePlace -> {
-
+            is SearchEvent.OnAddPlace -> {
+                addPlace(event.placeName)
             }
 
-//            is SearchEvent.OnAddQuery -> {
-//                if (state.query.contains(event.query)) return
-//                else {
-//                    state = state.copy(query = state.query + event.query)
-//                    println("qqq SearchViewModel->OnAddQuery->${state.query}")
-//                }
-//            }
-//
-//            is SearchEvent.OnRemoveQuery -> {
-//                state = state.copy(query = state.query.replace(event.query, ""))
-//                println("qqq SearchViewModel->OnRemoveQuery->${state.query}")
-//            }
+            is SearchEvent.OnRemovePlace -> {
+                removePlace(event.placeName)
+            }
         }
     }
 
@@ -66,4 +57,22 @@ class SearchViewModel @Inject constructor(
 //                .onFailure { println("qqq SearchViewModel->onFailure->${it.message}") }
 //        }
 //    }
+
+    private fun addPlace(place: String) {
+        val places = _state.value.places.toMutableList()
+        places += place
+        _state.update {
+            it.copy(places = places)
+        }
+        println("qqq SearchViewModel->addPlace->${state.value.places}")
+    }
+
+    private fun removePlace(place: String) {
+        val places = _state.value.places.toMutableList()
+        places.remove(places.find { it.contains(place) })
+        _state.update {
+            it.copy(places = places)
+        }
+        println("qqq SearchViewModel->removePlace->${state.value.places}")
+    }
 }

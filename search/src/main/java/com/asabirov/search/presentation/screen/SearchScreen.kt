@@ -56,7 +56,6 @@ fun SearchScreen(
             onResult = { isGranted: Boolean ->
                 if (isGranted) {
                     locationService.getCurrentCity(locationService.hasLocationPermission()) {
-//                        viewModel.updateCityQuery(cityName = it ?: "")
                         viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it ?: ""))
                     }
                 }
@@ -73,7 +72,7 @@ fun SearchScreen(
         val city = remember {
             mutableStateOf("")
         }
-        val place = remember {
+        val places = remember {
             mutableStateOf("")
         }
         LaunchedEffect(key1 = city) {
@@ -81,15 +80,19 @@ fun SearchScreen(
                 city.value = it.city
             }
         }
+        LaunchedEffect(key1 = places) {
+            viewModel.state.collectLatest {
+                places.value = it.places.joinToString(", ")
+            }
+        }
         SearchTextField(
-            text = city,
+            text = city.value,
             onValueChange = {
                 isHideKeyboard = false
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
             },
             onSearch = {
                 hideKeyboard()
-//                println("qqq ->onSearch->${state.cityName}")
             },
             iconLeft = {
                 IconButton(
@@ -124,7 +127,7 @@ fun SearchScreen(
             }
         )
         SearchTextField(
-            text = city,
+            text = places.value,
             onValueChange = {
                 isHideKeyboard = false
             },
@@ -156,31 +159,31 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            SetPlace(name = "Restaurants", query = "+restaurant", onClick = {
+            SetPlace(placeName = "Restaurants", query = "+restaurant", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Museums", query = "+museums", onClick = {
+            SetPlace(placeName = "Museums", query = "+museums", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Cinemas", query = "+Cinemas", onClick = {
+            SetPlace(placeName = "Cinemas", query = "+Cinemas", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Shopping malls", query = "+Shopping_malls", onClick = {
+            SetPlace(placeName = "Shopping malls", query = "+Shopping_malls", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Universities", query = "+Universities", onClick = {
+            SetPlace(placeName = "Universities", query = "+Universities", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Hospitals", query = "+Hospitals", onClick = {
+            SetPlace(placeName = "Hospitals", query = "+Hospitals", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Fast food", query = "+fast_food", onClick = {
+            SetPlace(placeName = "Fast food", query = "+fast_food", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Night Clubs", query = "+Night_Clubs", onClick = {
+            SetPlace(placeName = "Night Clubs", query = "+Night_Clubs", onClick = {
                 hideKeyboard()
             })
-            SetPlace(name = "Hookah places", query = "+hookah", onClick = {
+            SetPlace(placeName = "Hookah places", query = "+hookah", onClick = {
                 hideKeyboard()
             })
         }
@@ -189,20 +192,20 @@ fun SearchScreen(
 
 @Composable
 private fun SetPlace(
-    name: String,
+    placeName: String,
     query: String,
     viewModel: SearchViewModel = hiltViewModel(),
     onClick: () -> Unit
 ) {
     SelectableButton(
-        text = name,
+        text = placeName,
         color = MaterialTheme.colorScheme.primary,
         selectedTextColor = Color.White,
         onClick = { isSelected ->
             onClick()
 //            viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
-//            if (isSelected) viewModel.onEvent(SearchEvent.OnAddQuery(query = query))
-//            else viewModel.onEvent(SearchEvent.OnRemoveQuery(query = query))
+            if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlace(placeName = placeName))
+            else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         }
     )
 }

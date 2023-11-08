@@ -11,7 +11,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusState
@@ -22,7 +21,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SearchTextField(
-    text: State<String>,
+    text: String,
     onValueChange: (String) -> Unit,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
@@ -32,11 +31,10 @@ fun SearchTextField(
     label: String = "",
     onFocusChanged: (FocusState, String) -> Unit
 ) {
-    val textValue = text.value
     val focusManager = LocalFocusManager.current
     Box{
         OutlinedTextField(
-            value = textValue,
+            value = text,
             onValueChange = onValueChange,
             singleLine = true,
             keyboardActions = KeyboardActions(
@@ -55,7 +53,7 @@ fun SearchTextField(
                 .padding(2.dp)
                 .background(MaterialTheme.colorScheme.surface)
                 .fillMaxWidth()
-                .onFocusChanged { onFocusChanged(it, textValue) },
+                .onFocusChanged { onFocusChanged(it, text) },
             leadingIcon = iconLeft,
             trailingIcon = iconRight,
             label = { Text(label) }

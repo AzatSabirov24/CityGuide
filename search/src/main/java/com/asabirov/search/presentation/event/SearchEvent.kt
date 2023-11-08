@@ -4,7 +4,6 @@ sealed interface SearchEvent {
 
     data object OnSearch : SearchEvent
     data class OnChangeCityName(val cityName: String) : SearchEvent
-    data class OnChangePlace(val placeName: String) : SearchEvent
-//    data class OnAddQuery(val query: String) : SearchEvent
-//    data class OnRemoveQuery(val query: String) : SearchEvent
+    data class OnAddPlace(val placeName: String) : SearchEvent
+    data class OnRemovePlace(val placeName: String) : SearchEvent
 }
