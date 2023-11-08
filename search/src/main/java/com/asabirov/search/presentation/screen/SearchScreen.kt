@@ -200,6 +200,6 @@ private fun SetPlace(
             if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
             else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         },
-        selectedPlaces = viewModel.placesState
+        searchState = viewModel.state
     )
 }

@@ -3,7 +3,6 @@ package com.asabirov.search.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
-import com.asabirov.search.presentation.state.PlacesState
 import com.asabirov.search.presentation.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,9 +17,6 @@ class SearchViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(SearchState())
     val state = _state.asStateFlow()
-
-    private val _placesState = MutableStateFlow(PlacesState())
-    val placesState = _placesState.asStateFlow()
 
     fun onEvent(event: SearchEvent) {
         when (event) {
@@ -43,7 +39,6 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.OnAddPlaceByEditTextField -> {
                 onChangePlace(event.placeName)
                 updateQueryForSearch()
-                updatePlacesState()
             }
 
             is SearchEvent.OnRemovePlace -> {
@@ -100,14 +95,5 @@ class SearchViewModel @Inject constructor(
             it.copy(queryForSearch = it.places.joinToString("+") + "+in+${it.city}")
         }
         println("qqq SearchViewModel->updateQueryForSearch->${_state.value.queryForSearch}")
-    }
-
-    private fun updatePlacesState() {
-        val places = _placesState.value.places.toMutableList()
-        places.clear()
-        places.addAll(_state.value.places)
-        _placesState.update {
-            it.copy(places = places)
-        }
     }
 }

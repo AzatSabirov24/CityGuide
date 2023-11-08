@@ -20,7 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.asabirov.search.presentation.state.PlacesState
+import com.asabirov.search.presentation.state.SearchState
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -32,13 +32,13 @@ fun SelectableButton(
     onClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.labelLarge,
-    selectedPlaces: StateFlow<PlacesState>
+    searchState: StateFlow<SearchState>
 ) {
     var isSelected by remember {
         mutableStateOf(false)
     }
     LaunchedEffect(key1 = true) {
-        selectedPlaces.collectLatest {
+        searchState.collectLatest {
             isSelected = it.places.any { placeName -> placeName.lowercase().contains(text.lowercase()) }
         }
     }
