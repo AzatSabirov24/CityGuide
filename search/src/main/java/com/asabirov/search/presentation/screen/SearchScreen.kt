@@ -91,7 +91,7 @@ fun SearchScreen(
                 hideKeyboard()
 //                println("qqq ->onSearch->${state.cityName}")
             },
-            iconRight = {
+            iconLeft = {
                 IconButton(
                     onClick = {
                         viewModel.onEvent(SearchEvent.OnSearch)
@@ -104,7 +104,7 @@ fun SearchScreen(
                     )
                 }
             },
-            iconLeft = {
+            iconRight = {
                 IconButton(
                     onClick = {
                         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -117,6 +117,7 @@ fun SearchScreen(
                 }
             },
             hideKeyboard = isHideKeyboard,
+            label = stringResource(id = R.string.city_label),
             onFocusChanged = { _, cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
                 println("qqq ->SearchScreen->${viewModel.state.value.city}")
@@ -130,7 +131,7 @@ fun SearchScreen(
             onSearch = {
                 hideKeyboard()
             },
-            iconRight = {
+            iconLeft = {
                 IconButton(
                     onClick = {
                         viewModel.onEvent(SearchEvent.OnSearch)
@@ -143,19 +144,8 @@ fun SearchScreen(
                     )
                 }
             },
-            iconLeft = {
-                IconButton(
-                    onClick = {
-                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = stringResource(id = R.string.current_location)
-                    )
-                }
-            },
             hideKeyboard = isHideKeyboard,
+            label = stringResource(id = R.string.place_label),
             onFocusChanged = { _, cityName ->
 
             }
