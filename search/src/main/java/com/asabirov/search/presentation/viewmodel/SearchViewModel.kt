@@ -32,8 +32,13 @@ class SearchViewModel @Inject constructor(
                 println("qqq SearchViewModel->onEvent->${_state.value.city}")
             }
 
-            is SearchEvent.OnAddPlace -> {
+            is SearchEvent.OnAddPlaceByClickTag -> {
                 addPlace(event.placeName)
+                updateQueryForSearch()
+            }
+
+            is SearchEvent.OnAddPlaceByEditTextField -> {
+                onChangePlace(event.placeName)
                 updateQueryForSearch()
             }
 
@@ -60,6 +65,16 @@ class SearchViewModel @Inject constructor(
 //                .onFailure { println("qqq SearchViewModel->onFailure->${it.message}") }
 //        }
 //    }
+
+    private fun onChangePlace(place: String) {
+        val places = _state.value.places.toMutableList()
+        places.clear()
+        places += place
+        _state.update {
+            it.copy(places = places)
+        }
+        println("qqq SearchViewModel->onChangePlace->${state.value.places}")
+    }
 
     private fun addPlace(place: String) {
         val places = _state.value.places.toMutableList()

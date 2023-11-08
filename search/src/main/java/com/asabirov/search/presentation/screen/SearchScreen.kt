@@ -129,6 +129,7 @@ fun SearchScreen(
             text = places.value,
             onValueChange = {
                 isHideKeyboard = false
+                viewModel.onEvent(SearchEvent.OnAddPlaceByEditTextField(placeName = it))
             },
             onSearch = {
                 hideKeyboard()
@@ -155,31 +156,29 @@ fun SearchScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            SetPlace(placeName = "Restaurants", query = "+restaurant", onClick = {
+            SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
+            SetPlace(placeName = "Museums", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Museums", query = "+museums", onClick = {
+            SetPlace(placeName = "Cinemas", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Cinemas", query = "+Cinemas", onClick = {
+            SetPlace(placeName = "Shopping malls", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Shopping malls", query = "+Shopping_malls", onClick = {
+            SetPlace(placeName = "Universities", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Universities", query = "+Universities", onClick = {
+            SetPlace(placeName = "Hospitals", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Hospitals", query = "+Hospitals", onClick = {
+            SetPlace(placeName = "Fast food", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Fast food", query = "+fast_food", onClick = {
+            SetPlace(placeName = "Night Clubs", hideKeyboard = {
                 hideKeyboard()
             })
-            SetPlace(placeName = "Night Clubs", query = "+Night_Clubs", onClick = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Hookah places", query = "+hookah", onClick = {
+            SetPlace(placeName = "Hookah places", hideKeyboard = {
                 hideKeyboard()
             })
         }
@@ -189,18 +188,16 @@ fun SearchScreen(
 @Composable
 private fun SetPlace(
     placeName: String,
-    query: String,
     viewModel: SearchViewModel = hiltViewModel(),
-    onClick: () -> Unit
+    hideKeyboard: () -> Unit
 ) {
     SelectableButton(
         text = placeName,
         color = MaterialTheme.colorScheme.primary,
         selectedTextColor = Color.White,
         onClick = { isSelected ->
-            onClick()
-//            viewModel.onEvent(SearchEvent.OnChangeCityName(city.value))
-            if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlace(placeName = placeName))
+            hideKeyboard()
+            if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
             else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         }
     )
