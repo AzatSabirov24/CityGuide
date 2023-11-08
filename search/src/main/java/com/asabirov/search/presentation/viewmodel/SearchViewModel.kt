@@ -7,8 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.place.Query
 import com.asabirov.search.presentation.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,14 +24,18 @@ class SearchViewModel @Inject constructor(
     var state by mutableStateOf(SearchState())
         private set
 
+    private val _cityQuery = MutableStateFlow(Query.CityQuery())
+    val cityQuery = _cityQuery.asStateFlow()
+
     fun onEvent(event: SearchEvent) {
         when (event) {
             is SearchEvent.OnSearch -> {
                 executeSearch()
             }
 
-            is SearchEvent.OnChangeCityName -> {
+            is SearchEvent.OnAddCityName -> {
                 state = state.copy(cityName = event.name)
+                println("qqq SearchViewModel->onEvent->${state.cityName}")
             }
 
             is SearchEvent.OnAddQuery -> {
@@ -59,6 +67,12 @@ class SearchViewModel @Inject constructor(
                     )
                 }
                 .onFailure { println("qqq SearchViewModel->onFailure->${it.message}") }
+        }
+    }
+
+    fun updateCityQuery(cityName: String) {
+        _cityQuery.update {
+            it.copy(cityName = cityName)
         }
     }
 }
