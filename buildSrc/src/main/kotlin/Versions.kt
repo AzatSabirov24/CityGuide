@@ -34,6 +34,9 @@ object Versions {
     // google places
     const val googlePlaces = "3.2.0"
 
+    // coil
+    const val coil = "2.5.0"
+
     // jUnit
     const val jUnit = "4.13.2"
     const val jUnitAndroid = "1.1.5"

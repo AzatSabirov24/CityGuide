@@ -26,6 +26,7 @@ dependencies {
     retrofit()
     hilt()
     compose()
+    coil()
 
     junit()
 

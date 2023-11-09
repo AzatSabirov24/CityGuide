@@ -51,6 +51,9 @@ object Dependencies {
     // google places
     const val googlePlaces = "com.google.android.libraries.places:places:${Versions.googlePlaces}"
 
+    // coil
+    const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
+
     // jUnit
     const val jUnit = "junit:junit:${Versions.jUnit}"
     const val jUnitAndroid = "androidx.test.ext:junit:${Versions.jUnitAndroid}"
@@ -109,6 +112,12 @@ fun DependencyHandler.playServicesLocation() {
 fun DependencyHandler.googlePlaces() {
     implementation(Dependencies.googlePlaces)
 }
+
+fun DependencyHandler.coil() {
+    implementation(Dependencies.coil)
+}
+
+// Test
 
 fun DependencyHandler.junit() {
     testImplementation(Dependencies.jUnit)
