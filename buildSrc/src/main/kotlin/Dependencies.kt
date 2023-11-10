@@ -136,6 +136,10 @@ fun DependencyHandler.core() {
     implementation(project(":core"))
 }
 
+fun DependencyHandler.coreUi() {
+    implementation(project(":core_ui"))
+}
+
 fun DependencyHandler.search() {
     implementation(project(":search"))
 }
