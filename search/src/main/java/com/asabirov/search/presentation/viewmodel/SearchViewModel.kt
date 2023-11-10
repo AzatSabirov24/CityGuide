@@ -67,6 +67,7 @@ class SearchViewModel @Inject constructor(
                     placesState = placesState.copy(
                         places = searchResult.results
                     )
+                    println("qqq SearchViewModel->executeSearch->${searchResult.results}")
                 }
                 .onFailure {
                     searchState = searchState.copy(

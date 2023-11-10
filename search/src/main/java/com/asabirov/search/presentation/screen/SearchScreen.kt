@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -83,12 +83,13 @@ fun SearchScreen(
             },
             onSearch = {
                 hideKeyboard()
+                viewModel.onEvent(SearchEvent.OnSearch)
             },
             iconLeft = {
                 IconButton(
                     onClick = {
-                        viewModel.onEvent(SearchEvent.OnSearch)
                         hideKeyboard()
+                        viewModel.onEvent(SearchEvent.OnSearch)
                     },
                 ) {
                     Icon(
@@ -123,12 +124,13 @@ fun SearchScreen(
             },
             onSearch = {
                 hideKeyboard()
+                viewModel.onEvent(SearchEvent.OnSearch)
             },
             iconLeft = {
                 IconButton(
                     onClick = {
-                        viewModel.onEvent(SearchEvent.OnSearch)
                         hideKeyboard()
+                        viewModel.onEvent(SearchEvent.OnSearch)
                     },
                 ) {
                     Icon(
@@ -159,18 +161,17 @@ fun SearchScreen(
                 SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
             }
         }
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(viewModel.placesState.places) { place ->
                 PlaceItem(place = place, onClick = { })
             }
         }
-    }
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        when {
-            searchState.isSearching -> CircularProgressIndicator()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            when {
+                searchState.isSearching -> CircularProgressIndicator()
 //            state.trackableFood.isEmpty() -> {
 //                Text(
 //                    text = stringResource(id = androidx.compose.foundation.layout.R.string.no_results),
@@ -178,6 +179,7 @@ fun SearchScreen(
 //                    textAlign = TextAlign.Center
 //                )
 //            }
+            }
         }
     }
 }
