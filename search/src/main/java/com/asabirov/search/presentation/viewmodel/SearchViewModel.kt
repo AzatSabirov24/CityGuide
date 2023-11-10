@@ -54,16 +54,25 @@ class SearchViewModel @Inject constructor(
 
     private fun executeSearch() {
         viewModelScope.launch {
-            searchState = searchState.copy(isSearching = true)
+            searchState = searchState.copy(
+                isSearching = true
+            )
+            placesState = placesState.copy(places = emptyList())
             searchUseCases.searchByText(searchState.queryForSearch)
                 .onSuccess { searchResult ->
                     println("qqq SearchViewModel->onSuccess->${searchResult.results}")
                     searchState = searchState.copy(
-                        isSearching = false,
-                        searchResult = searchResult
+                        isSearching = false
+                    )
+                    placesState = placesState.copy(
+                        places = searchResult.results
                     )
                 }
-                .onFailure { println("qqq SearchViewModel->onFailure->${it.message}") }
+                .onFailure {
+                    searchState = searchState.copy(
+                        isSearching = false
+                    )
+                    println("qqq SearchViewModel->onFailure->${it.message}") }
         }
     }
 
