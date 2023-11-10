@@ -1,6 +1,6 @@
 package com.asabirov.search.domain.model.search_by_text
 
-data class Place(
+data class PlaceModel(
     val name: String,
     val photoUrl: String
 )

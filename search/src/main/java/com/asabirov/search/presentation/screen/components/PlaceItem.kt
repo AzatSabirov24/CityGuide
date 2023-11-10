@@ -20,12 +20,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.asabirov.core_ui.LocalSpacing
-import com.asabirov.search.domain.model.search_by_text.Place
+import com.asabirov.search.domain.model.search_by_text.PlaceModel
 
 @Composable
 fun PlaceItem(
     modifier: Modifier = Modifier,
-    place: Place,
+    place: PlaceModel,
     onClick: (String) -> Unit
 ) {
     val spacing = LocalSpacing.current

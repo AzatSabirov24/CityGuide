@@ -1,5 +1,5 @@
 package com.asabirov.search.domain.model.search_by_text
 
 data class SearchByTextModel(
-    val results: List<Place>
+    val results: List<PlaceModel>
 )

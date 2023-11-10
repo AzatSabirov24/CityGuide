@@ -4,11 +4,11 @@ import com.asabirov.search.BuildConfig
 import com.asabirov.search.data.remote.GoogleMapsApi
 import com.asabirov.search.data.remote.dto.search_by_text.ResultDto
 import com.asabirov.search.data.remote.dto.search_by_text.SearchByTextDto
-import com.asabirov.search.domain.model.search_by_text.Place
+import com.asabirov.search.domain.model.search_by_text.PlaceModel
 import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
 
-fun ResultDto.toResultModel(): Place {
-    return Place(
+fun ResultDto.toResultModel(): PlaceModel {
+    return PlaceModel(
         name = name,
         photoUrl = setPhotoUrlWithQuery(this)
     )
