@@ -9,20 +9,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.asabirov.search.presentation.state.SearchState
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @Composable
 fun PlaceSelectableButton(
@@ -32,15 +26,10 @@ fun PlaceSelectableButton(
     onClick: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = MaterialTheme.typography.labelLarge,
-    searchState: StateFlow<SearchState>
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
-    var isSelected by remember {
-        mutableStateOf(false)
-    }
-    LaunchedEffect(key1 = true) {
-        searchState.collectLatest {
-            isSelected = it.placesNames.any { placeName -> placeName.lowercase().contains(text.lowercase()) }
-        }
+    var isSelected = viewModel.searchState.placesNames.any { placeName ->
+        placeName.lowercase().contains(text.lowercase())
     }
     Box(
         contentAlignment = Alignment.Center,

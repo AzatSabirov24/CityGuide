@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +38,6 @@ import com.asabirov.search.presentation.screen.components.PlaceItem
 import com.asabirov.search.presentation.screen.components.PlaceSelectableButton
 import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
-import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
 @Composable
@@ -73,24 +71,15 @@ fun SearchScreen(
         modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
     ) {
         isLocationPermissionsGranted = locationService.hasLocationPermission()
-        val city = remember {
-            mutableStateOf("")
-        }
-        val places = remember {
-            mutableStateOf("")
-        }
-        LaunchedEffect(key1 = city) {
-            viewModel.searchState.collectLatest {
-                city.value = it.city
-            }
-        }
-        LaunchedEffect(key1 = places) {
-            viewModel.searchState.collectLatest {
-                places.value = it.placesNames.joinToString(" ")
-            }
-        }
+        val searchState = viewModel.searchState
+//        val city = remember {
+//            mutableStateOf("")
+//        }
+//        val places = remember {
+//            mutableStateOf("")
+//        }
         SearchTextField(
-            text = city.value,
+            text = searchState.city,
             onValueChange = {
                 isHideKeyboard = false
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
@@ -130,7 +119,7 @@ fun SearchScreen(
             }
         )
         SearchTextField(
-            text = places.value,
+            text = searchState.placesNames.joinToString(" "),
             onValueChange = {
                 isHideKeyboard = false
                 viewModel.onEvent(SearchEvent.OnAddPlaceByEditTextField(placeName = it))
@@ -174,7 +163,7 @@ fun SearchScreen(
             }
         }
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            items(viewModel.placesState.value.places) { place ->
+            items(viewModel.placesState.places) { place ->
                 PlaceItem(place = place, onClick = { })
             }
         }
@@ -196,6 +185,6 @@ private fun SetPlace(
             if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
             else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         },
-        searchState = viewModel.searchState
+        viewModel = viewModel
     )
 }
