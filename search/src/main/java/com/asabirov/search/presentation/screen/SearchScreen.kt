@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
@@ -31,8 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.screen.components.PlaceItem
+import com.asabirov.search.presentation.screen.components.PlaceSelectableButton
 import com.asabirov.search.presentation.screen.components.SearchTextField
-import com.asabirov.search.presentation.screen.components.SelectableButton
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -75,13 +80,13 @@ fun SearchScreen(
             mutableStateOf("")
         }
         LaunchedEffect(key1 = city) {
-            viewModel.state.collectLatest {
+            viewModel.searchState.collectLatest {
                 city.value = it.city
             }
         }
         LaunchedEffect(key1 = places) {
-            viewModel.state.collectLatest {
-                places.value = it.places.joinToString(" ")
+            viewModel.searchState.collectLatest {
+                places.value = it.placesNames.joinToString(" ")
             }
         }
         SearchTextField(
@@ -122,7 +127,6 @@ fun SearchScreen(
             label = stringResource(id = R.string.city_label),
             onFocusChanged = { cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
-                println("qqq ->SearchScreen->${viewModel.state.value.city}")
             }
         )
         SearchTextField(
@@ -150,37 +154,29 @@ fun SearchScreen(
             hideKeyboard = isHideKeyboard,
             label = stringResource(id = R.string.place_label)
         )
-
-        FlowRow(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(8.dp)
         ) {
-            SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
-            SetPlace(placeName = "Museums", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Cinemas", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Shopping malls", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Universities", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Hospitals", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Fast food", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Night Clubs", hideKeyboard = {
-                hideKeyboard()
-            })
-            SetPlace(placeName = "Hookah places", hideKeyboard = {
-                hideKeyboard()
-            })
+            FlowRow {
+                SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Cafe", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Museums", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Cinemas", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Shopping malls", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Universities", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Hospitals", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Fast food", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Night Clubs", hideKeyboard = { hideKeyboard() })
+                SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
+            }
+        }
+        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+            items(viewModel.placesState.value.places) { place ->
+                PlaceItem(place = place, onClick = { })
+            }
         }
     }
 }
@@ -191,7 +187,7 @@ private fun SetPlace(
     viewModel: SearchViewModel = hiltViewModel(),
     hideKeyboard: () -> Unit
 ) {
-    SelectableButton(
+    PlaceSelectableButton(
         text = placeName,
         color = MaterialTheme.colorScheme.primary,
         selectedTextColor = Color.White,
@@ -200,6 +196,6 @@ private fun SetPlace(
             if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
             else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         },
-        searchState = viewModel.state
+        searchState = viewModel.searchState
     )
 }

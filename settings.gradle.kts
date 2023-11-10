@@ -17,3 +17,4 @@ rootProject.name = "CityGuide"
 include(":app")
 include(":search")
 include(":core")
+include(":core_ui")

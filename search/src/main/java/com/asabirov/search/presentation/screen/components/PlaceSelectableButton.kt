@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun SelectableButton(
+fun PlaceSelectableButton(
     text: String,
     color: Color,
     selectedTextColor: Color,
@@ -39,7 +39,7 @@ fun SelectableButton(
     }
     LaunchedEffect(key1 = true) {
         searchState.collectLatest {
-            isSelected = it.places.any { placeName -> placeName.lowercase().contains(text.lowercase()) }
+            isSelected = it.placesNames.any { placeName -> placeName.lowercase().contains(text.lowercase()) }
         }
     }
     Box(
