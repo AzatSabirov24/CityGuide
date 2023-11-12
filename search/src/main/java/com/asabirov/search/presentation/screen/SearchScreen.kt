@@ -104,6 +104,7 @@ fun SearchScreen(
                 IconButton(
                     onClick = {
                         viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
+                        isHideKeyboard = false
                     },
                 ) {
                     Icon(

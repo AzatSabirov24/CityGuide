@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class ResultDto(
     val name: String,
-    val photos: List<PhotoDto>,
+    val photos: List<PhotoDto>?,
     val icon: String,
     val rating: Double,
     val reference: String,
