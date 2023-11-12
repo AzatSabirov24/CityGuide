@@ -17,26 +17,25 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val locations = mutableListOf<LatLng>()
-    viewModel.placesState.places.forEach {
-        locations.add(LatLng(it.location.lat, it.location.lng))
-    }
+    val places = viewModel.placesState.places
     val cameraPositionState = rememberCameraPositionState {
-        locations.forEach {
-            position = CameraPosition.fromLatLngZoom(it, 10f)
+        places.forEach { place ->
+            position =
+                CameraPosition.fromLatLngZoom(
+                    LatLng(place.location.lat, place.location.lng),
+                    10f
+                )
         }
-
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(isMyLocationEnabled = true)
     ) {
-        locations.forEach {
+        places.forEach { place ->
             Marker(
-                state = MarkerState(position = it),
-                title = "Singapore",
-                snippet = "Marker in Singapore"
+                state = MarkerState(position = LatLng(place.location.lat, place.location.lng)),
+                title = place.name
             )
         }
     }

@@ -108,7 +108,6 @@ class SearchViewModel @Inject constructor(
         val places = searchState.placesNames.toMutableList()
         places += place
         searchState = searchState.copy(placesNames = places)
-        println("qqq SearchViewModel->addPlace->")
     }
 
     private fun removePlace(place: String) {
