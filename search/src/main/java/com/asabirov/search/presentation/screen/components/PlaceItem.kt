@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -30,8 +29,8 @@ fun PlaceItem(
 ) {
     val spacing = LocalSpacing.current
     Box(modifier = modifier
-        .width(200.dp)
-        .height(200.dp)
+        .width(300.dp)
+        .height(250.dp)
     ) {
         Column(modifier = modifier.fillMaxSize()) {
             Text(text = place.name)
@@ -42,15 +41,14 @@ fun PlaceItem(
                         .apply(block = @SuppressLint("ResourceType")
                         fun ImageRequest.Builder.() {
                             crossfade(true)
-//                            error(R.drawable.ic_burger)
-//                            fallback(R.drawable.ic_burger)
                         }).build()
                 ),
                 contentDescription = place.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(200.dp)
-                    .clip(RoundedCornerShape(5.dp))
+                    .width(300.dp)
+                    .height(250.dp)
+                    .clip(RoundedCornerShape(10.dp))
             )
         }
     }

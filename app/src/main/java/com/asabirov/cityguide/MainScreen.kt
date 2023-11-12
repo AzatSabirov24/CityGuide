@@ -39,6 +39,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
+import com.asabirov.search.presentation.screen.MapScreen
 import com.asabirov.search.presentation.screen.SearchScreen
 import kotlinx.coroutines.launch
 
@@ -74,6 +75,7 @@ fun MainScreen() {
         }
         val navController = rememberNavController()
         ModalNavigationDrawer(
+            gesturesEnabled = false,
             drawerContent = {
                 ModalDrawerSheet {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -133,9 +135,16 @@ fun MainScreen() {
                         .padding(paddingValues)
                 ) {
                     NavHost(navController = navController, startDestination = "Search") {
-                        composable("Search") { SearchScreen() }
+                        composable("Search") {
+                            SearchScreen(
+                                onNavigateToMap = {
+                                    navController.navigate("Map")
+                                }
+                            )
+                        }
                         composable("Favorites") { FavoriteScreen() }
                         composable("Settings") { SettingsScreen() }
+                        composable("Map") { MapScreen() }
                     }
                 }
             }

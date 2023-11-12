@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,8 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
@@ -46,9 +49,12 @@ import com.asabirov.search.presentation.screen.components.PlaceSelectableButton
 import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class
+)
 @Composable
 fun SearchScreen(
+    onNavigateToMap: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -75,6 +81,15 @@ fun SearchScreen(
         mutableStateOf(false)
     }
     val searchState = viewModel.searchState
+
+    LaunchedEffect(key1 = keyboardController) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.NavigateUp -> onNavigateToMap()
+                else -> Unit
+            }
+        }
+    }
     Column(
         modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
     ) {
@@ -187,15 +202,26 @@ fun SearchScreen(
                 }
 
                 !searchState.isSearching -> {
-                    Text(text = stringResource(id = R.string.search))
+                    Text(
+                        text = stringResource(id = R.string.search),
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }
-        Spacer(modifier = Modifier.height(spacing.spaceLarge))
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(viewModel.placesState.places) { place ->
-                PlaceItem(place = place, onClick = { })
+                PlaceItem(
+                    modifier = Modifier.padding(4.dp),
+                    place = place,
+                    onClick = { }
+                )
             }
+        }
+        Button(onClick = { onNavigateToMap() }) {
+            Text(text = "to map")
         }
     }
 }

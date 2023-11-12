@@ -15,8 +15,8 @@ fun ResultDto.toResultModel(): PlaceModel {
 }
 
 fun SearchByTextDto.toSearchByTextModel(): SearchByTextModel {
-    val resultsWithPhoto = this.results.filter { it.photos != null }
-    val results = resultsWithPhoto.map { it.toResultModel() }
+//    val resultsWithPhoto = this.results.filter { it.photos != null }
+    val results =  this.results.map { it.toResultModel() }
     return SearchByTextModel(results = results)
 }
 

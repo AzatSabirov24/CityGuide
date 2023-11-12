@@ -29,6 +29,7 @@ dependencies {
     coil()
 
     junit()
+    implementation ("com.google.maps.android:maps-compose:4.1.1")
 
     // modules
     core()

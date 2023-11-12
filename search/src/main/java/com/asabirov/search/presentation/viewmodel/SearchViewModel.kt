@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.state.PlacesState
 import com.asabirov.search.presentation.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,6 +26,9 @@ class SearchViewModel @Inject constructor(
 
     var placesState by mutableStateOf(PlacesState())
         private set
+
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onEvent(event: SearchEvent) {
         when (event) {
@@ -54,6 +60,10 @@ class SearchViewModel @Inject constructor(
                 removeAllPlaces()
                 updateQueryForSearch()
             }
+
+            is SearchEvent.OnClickShowResultsOnMap -> {
+//                openSearchResultsOnMap()
+            }
         }
     }
 
@@ -78,7 +88,8 @@ class SearchViewModel @Inject constructor(
                     searchState = searchState.copy(
                         isSearching = false
                     )
-                    println("qqq SearchViewModel->onFailure->${it.message}") }
+                    println("qqq SearchViewModel->onFailure->${it.message}")
+                }
         }
     }
 
@@ -112,4 +123,10 @@ class SearchViewModel @Inject constructor(
             searchState.copy(queryForSearch = searchState.placesNames.joinToString("+") + "+in+${searchState.city}")
         println("qqq SearchViewModel->updateQueryForSearch->${searchState.queryForSearch}")
     }
+
+//    private fun openSearchResultsOnMap() {
+//        viewModelScope.launch {
+//            _uiEvent.send(UiEvent.NavigateUp)
+//        }
+//    }
 }

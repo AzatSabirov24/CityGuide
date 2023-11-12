@@ -4,6 +4,6 @@
     <string name="current_location">Current Location</string>
     <string name="close">Close</string>
     <string name="city_label">City</string>
-    <string name="place_label">Place</string>
+    <string name="place_label">Type or select below</string>
     <string name="no_photo">No photo</string>
 </resources>
