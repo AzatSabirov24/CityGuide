@@ -3,13 +3,14 @@ package com.asabirov.search.presentation.screen
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -17,17 +18,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.location.LocationService
+import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.screen.components.PlaceItem
@@ -57,6 +59,7 @@ fun SearchScreen(
         keyboardController?.hide()
         isHideKeyboard = true
     }
+    val spacing = LocalSpacing.current
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
@@ -86,6 +89,7 @@ fun SearchScreen(
                 hideKeyboard()
                 viewModel.onEvent(SearchEvent.OnSearch)
             },
+            iconLeftRequired = true,
             iconLeft = {
                 IconButton(
                     onClick = {
@@ -100,6 +104,7 @@ fun SearchScreen(
                     )
                 }
             },
+            iconRightRequired = true,
             iconRight = {
                 IconButton(
                     onClick = {
@@ -113,6 +118,7 @@ fun SearchScreen(
                     )
                 }
             },
+            hideKeyboard = isHideKeyboard,
             label = stringResource(id = R.string.city_label),
             onFocusChanged = { cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
@@ -128,19 +134,7 @@ fun SearchScreen(
                 hideKeyboard()
                 viewModel.onEvent(SearchEvent.OnSearch)
             },
-            iconLeft = {
-                IconButton(
-                    onClick = {
-                        hideKeyboard()
-                        viewModel.onEvent(SearchEvent.OnSearch)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search)
-                    )
-                }
-            },
+            iconRightRequired = true,
             iconRight = {
                 IconButton(
                     onClick = {
@@ -174,17 +168,33 @@ fun SearchScreen(
                 SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
             }
         }
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
+        Button(
+            modifier = Modifier
+                .height(56.dp)
+                .fillMaxWidth(),
+            onClick = {
+                hideKeyboard()
+                viewModel.onEvent(SearchEvent.OnSearch)
+            }
+        ) {
+            when {
+                searchState.isSearching -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(32.dp),
+                        color = MaterialTheme.colorScheme.inverseOnSurface
+                    )
+                }
+
+                !searchState.isSearching -> {
+                    Text(text = stringResource(id = R.string.search))
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(spacing.spaceLarge))
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(viewModel.placesState.places) { place ->
                 PlaceItem(place = place, onClick = { })
-            }
-        }
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            when {
-                searchState.isSearching -> CircularProgressIndicator()
             }
         }
     }
