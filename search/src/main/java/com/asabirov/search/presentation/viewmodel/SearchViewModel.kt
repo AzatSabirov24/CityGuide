@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.search.domain.model.search_by_text.LocationModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.state.PlacesState
@@ -62,7 +63,10 @@ class SearchViewModel @Inject constructor(
             }
 
             is SearchEvent.OnClickShowResultsOnMap -> {
-//                openSearchResultsOnMap()
+                println("qqq SearchViewModel->onEvent->")
+                openSearchResultsOnMap(
+                    event.locations
+                )
             }
         }
     }
@@ -104,6 +108,7 @@ class SearchViewModel @Inject constructor(
         val places = searchState.placesNames.toMutableList()
         places += place
         searchState = searchState.copy(placesNames = places)
+        println("qqq SearchViewModel->addPlace->")
     }
 
     private fun removePlace(place: String) {
@@ -124,9 +129,11 @@ class SearchViewModel @Inject constructor(
         println("qqq SearchViewModel->updateQueryForSearch->${searchState.queryForSearch}")
     }
 
-//    private fun openSearchResultsOnMap() {
-//        viewModelScope.launch {
-//            _uiEvent.send(UiEvent.NavigateUp)
-//        }
-//    }
+    private fun openSearchResultsOnMap(
+        locations: List<LocationModel>
+    ) {
+        viewModelScope.launch {
+            _uiEvent.send(UiEvent.OpenScreen(data = locations))
+        }
+    }
 }

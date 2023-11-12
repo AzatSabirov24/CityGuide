@@ -1,5 +1,6 @@
 package com.asabirov.cityguide
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,19 +31,24 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
 import com.asabirov.search.presentation.screen.MapScreen
 import com.asabirov.search.presentation.screen.SearchScreen
+import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
@@ -74,6 +80,9 @@ fun MainScreen() {
             mutableIntStateOf(0)
         }
         val navController = rememberNavController()
+        val viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        }
         ModalNavigationDrawer(
             gesturesEnabled = false,
             drawerContent = {
@@ -136,15 +145,26 @@ fun MainScreen() {
                 ) {
                     NavHost(navController = navController, startDestination = "Search") {
                         composable("Search") {
+                            val searchEntry = remember {
+                                navController.getBackStackEntry("Search")
+                            }
+                            val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
                             SearchScreen(
                                 onNavigateToMap = {
                                     navController.navigate("Map")
-                                }
+                                },
+                                viewModel = searchViewModel
                             )
                         }
                         composable("Favorites") { FavoriteScreen() }
                         composable("Settings") { SettingsScreen() }
-                        composable("Map") { MapScreen() }
+                        composable("Map") {
+                            val searchEntry = remember {
+                                navController.getBackStackEntry("Search")
+                            }
+                            val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
+                            MapScreen(viewModel = searchViewModel)
+                        }
                     }
                 }
             }

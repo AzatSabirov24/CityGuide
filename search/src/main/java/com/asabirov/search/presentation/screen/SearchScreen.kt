@@ -50,7 +50,8 @@ import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @OptIn(
-    ExperimentalLayoutApi::class, ExperimentalComposeUiApi::class
+    ExperimentalLayoutApi::class,
+    ExperimentalComposeUiApi::class
 )
 @Composable
 fun SearchScreen(
@@ -85,7 +86,7 @@ fun SearchScreen(
     LaunchedEffect(key1 = keyboardController) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.NavigateUp -> onNavigateToMap()
+                is UiEvent.OpenScreen -> onNavigateToMap()
                 else -> Unit
             }
         }
@@ -139,6 +140,7 @@ fun SearchScreen(
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
             }
         )
+        println("qqq ->SearchScreen->${searchState.placesNames}")
         SearchTextField(
             text = searchState.placesNames.joinToString(" "),
             onValueChange = {
@@ -220,10 +222,18 @@ fun SearchScreen(
                 )
             }
         }
-        Button(onClick = { onNavigateToMap() }) {
+        Button(
+            onClick = {
+                viewModel.onEvent(
+                    SearchEvent.OnClickShowResultsOnMap(
+                        locations = viewModel.placesState.places.map { it.location })
+                )
+            }) {
             Text(text = "to map")
         }
     }
+
+    println("qqq ->search screen->${viewModel.hashCode()}")
 }
 
 @Composable

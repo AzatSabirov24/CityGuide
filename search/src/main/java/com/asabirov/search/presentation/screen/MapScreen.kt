@@ -1,36 +1,44 @@
 package com.asabirov.search.presentation.screen
 
-import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.MapView
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun MapScreen() {
-    val singapore = LatLng(1.35, 103.87)
+fun MapScreen(
+    viewModel: SearchViewModel = hiltViewModel()
+) {
+    val locations = mutableListOf<LatLng>()
+    viewModel.placesState.places.forEach {
+        locations.add(LatLng(it.location.lat, it.location.lng))
+    }
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(singapore, 10f)
+        locations.forEach {
+            position = CameraPosition.fromLatLngZoom(it, 10f)
+        }
+
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState
+        cameraPositionState = cameraPositionState,
+        properties = MapProperties(isMyLocationEnabled = true)
     ) {
-        Marker(
-            state = MarkerState(position = singapore),
-            title = "Singapore",
-            snippet = "Marker in Singapore"
-        )
+        locations.forEach {
+            Marker(
+                state = MarkerState(position = it),
+                title = "Singapore",
+                snippet = "Marker in Singapore"
+            )
+        }
     }
 }
 
