@@ -49,6 +49,11 @@ class SearchViewModel @Inject constructor(
                 removePlace(event.placeName)
                 updateQueryForSearch()
             }
+
+            is SearchEvent.OnRemoveAllPlaces -> {
+                removeAllPlaces()
+                updateQueryForSearch()
+            }
         }
     }
 
@@ -93,6 +98,12 @@ class SearchViewModel @Inject constructor(
     private fun removePlace(place: String) {
         val places = searchState.placesNames.toMutableList()
         places.remove(places.find { it.contains(place) })
+        searchState = searchState.copy(placesNames = places)
+    }
+
+    private fun removeAllPlaces() {
+        val places = searchState.placesNames.toMutableList()
+        places.clear()
         searchState = searchState.copy(placesNames = places)
     }
 

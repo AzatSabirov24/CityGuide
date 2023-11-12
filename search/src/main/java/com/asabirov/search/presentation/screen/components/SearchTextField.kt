@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
@@ -18,12 +19,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchTextField(
     text: String,
     onValueChange: (String) -> Unit,
-    onSearch: () -> Unit,
     modifier: Modifier = Modifier,
+    onSearch: () -> Unit = {},
     iconLeft: @Composable (() -> Unit) = {},
     iconRight: @Composable (() -> Unit) = {},
     hideKeyboard: Boolean = false,
@@ -31,16 +33,15 @@ fun SearchTextField(
     onFocusChanged: (String) -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
-    Box{
+    Box {
         OutlinedTextField(
             value = text,
             onValueChange = onValueChange,
-            singleLine = true,
+            singleLine = false,
             keyboardActions = KeyboardActions(
                 onSearch = {
                     onSearch()
                     defaultKeyboardAction(ImeAction.Search)
-
                     focusManager.clearFocus()
                 }
             ),

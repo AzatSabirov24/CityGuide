@@ -7,4 +7,5 @@ sealed interface SearchEvent {
     data class OnAddPlaceByEditTextField(val placeName: String) : SearchEvent
     data class OnAddPlaceByClickTag(val placeName: String) : SearchEvent
     data class OnRemovePlace(val placeName: String) : SearchEvent
+    data object OnRemoveAllPlaces : SearchEvent
 }

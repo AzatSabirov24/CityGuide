@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -88,20 +89,9 @@ fun SearchScreen(
             iconLeft = {
                 IconButton(
                     onClick = {
-                        hideKeyboard()
-                        viewModel.onEvent(SearchEvent.OnSearch)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search)
-                    )
-                }
-            },
-            iconRight = {
-                IconButton(
-                    onClick = {
                         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = viewModel.searchState.city))
+                        isHideKeyboard = false
                     },
                 ) {
                     Icon(
@@ -110,7 +100,18 @@ fun SearchScreen(
                     )
                 }
             },
-            hideKeyboard = isHideKeyboard,
+            iconRight = {
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.close)
+                    )
+                }
+            },
             label = stringResource(id = R.string.city_label),
             onFocusChanged = { cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
@@ -139,7 +140,18 @@ fun SearchScreen(
                     )
                 }
             },
-            hideKeyboard = isHideKeyboard,
+            iconRight = {
+                IconButton(
+                    onClick = {
+                        viewModel.onEvent(SearchEvent.OnRemoveAllPlaces)
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.close)
+                    )
+                }
+            },
             label = stringResource(id = R.string.place_label)
         )
         Column(
@@ -172,13 +184,6 @@ fun SearchScreen(
         ) {
             when {
                 searchState.isSearching -> CircularProgressIndicator()
-//            state.trackableFood.isEmpty() -> {
-//                Text(
-//                    text = stringResource(id = androidx.compose.foundation.layout.R.string.no_results),
-//                    style = MaterialTheme.typography.body1,
-//                    textAlign = TextAlign.Center
-//                )
-//            }
             }
         }
     }
