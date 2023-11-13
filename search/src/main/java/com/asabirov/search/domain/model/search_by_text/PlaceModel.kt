@@ -3,5 +3,6 @@ package com.asabirov.search.domain.model.search_by_text
 data class PlaceModel(
     val name: String,
     val photoUrl: String,
-    val location: LocationModel
+    val location: LocationModel,
+    val isOpenNow: Boolean?
 )

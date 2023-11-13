@@ -21,7 +21,7 @@ data class ResultDto(
     @SerializedName("icon_mask_base_uri")
     val iconMaskBaseUri: String,
     @SerializedName("opening_hours")
-    val openingHours: OpeningHoursDto,
+    val openingHours: OpeningHoursDto?,
     @SerializedName("place_id")
     val placeId: String,
     @SerializedName("plus_code")

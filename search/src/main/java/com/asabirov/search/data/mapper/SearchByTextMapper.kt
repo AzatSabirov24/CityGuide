@@ -13,7 +13,8 @@ fun ResultDto.toResultModel(): PlaceModel {
     return PlaceModel(
         name = name,
         photoUrl = setPhotoUrlWithQuery(this),
-        location = geometry.location.toLocationModel()
+        location = geometry.location.toLocationModel(),
+        isOpenNow = openingHours?.openNow
     )
 }
 

@@ -18,6 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -36,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.event.UiEvent
@@ -140,7 +140,6 @@ fun SearchScreen(
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
             }
         )
-        println("qqq ->SearchScreen->${searchState.placesNames}")
         SearchTextField(
             text = searchState.placesNames.joinToString(" "),
             onValueChange = {
@@ -204,10 +203,10 @@ fun SearchScreen(
                 }
 
                 !searchState.isSearching -> {
-                    Text(
-                        text = stringResource(id = R.string.search),
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(id = R.string.search),
+                        modifier = Modifier.size(36.dp)
                     )
                 }
             }
@@ -222,18 +221,18 @@ fun SearchScreen(
                 )
             }
         }
-        Button(
-            onClick = {
-                viewModel.onEvent(
-                    SearchEvent.OnClickShowResultsOnMap(
-                        locations = viewModel.placesState.places.map { it.location })
-                )
-            }) {
-            Text(text = "to map")
+        if (viewModel.placesState.places.isNotEmpty()) {
+            Button(
+                onClick = {
+                    viewModel.onEvent(
+                        SearchEvent.OnClickShowResultsOnMap(
+                            locations = viewModel.placesState.places.map { it.location })
+                    )
+                }) {
+                Text(text = "On map")
+            }
         }
     }
-
-    println("qqq ->search screen->${viewModel.hashCode()}")
 }
 
 @Composable
