@@ -92,7 +92,7 @@ fun SearchScreen(
         }
     }
     Column(
-        modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+        modifier = Modifier.padding()
     ) {
         isLocationPermissionsGranted = locationService.hasLocationPermission()
         SearchTextField(
@@ -138,7 +138,8 @@ fun SearchScreen(
             label = stringResource(id = R.string.city_label),
             onFocusChanged = { cityName ->
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
-            }
+            },
+            modifier = Modifier.padding(horizontal = 10.dp)
         )
         SearchTextField(
             text = searchState.placesNames.joinToString(" "),
@@ -163,7 +164,8 @@ fun SearchScreen(
                     )
                 }
             },
-            label = stringResource(id = R.string.place_label)
+            label = stringResource(id = R.string.place_label),
+            modifier = Modifier.padding(horizontal = 10.dp)
         )
         Column(
             modifier = Modifier
@@ -188,7 +190,8 @@ fun SearchScreen(
         Button(
             modifier = Modifier
                 .height(56.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp),
             onClick = {
                 hideKeyboard()
                 viewModel.onEvent(SearchEvent.OnSearch)
@@ -223,13 +226,14 @@ fun SearchScreen(
         }
         if (viewModel.placesState.places.isNotEmpty()) {
             Button(
+                modifier = Modifier.padding(horizontal = 10.dp),
                 onClick = {
                     viewModel.onEvent(
                         SearchEvent.OnClickShowResultsOnMap(
                             locations = viewModel.placesState.places.map { it.location })
                     )
                 }) {
-                Text(text = "On map")
+                Text(text = stringResource(id = R.string.on_map))
             }
         }
     }

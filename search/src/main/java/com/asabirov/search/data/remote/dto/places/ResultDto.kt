@@ -1,4 +1,4 @@
-package com.asabirov.search.data.remote.dto.search_by_text
+package com.asabirov.search.data.remote.dto.places
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
@@ -8,7 +8,7 @@ data class ResultDto(
     val name: String,
     val photos: List<PhotoDto>?,
     val icon: String,
-    val rating: Double,
+    val rating: Double?,
     val reference: String,
     val types: List<String>,
     val geometry: GeometryDto,

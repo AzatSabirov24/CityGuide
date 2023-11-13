@@ -1,4 +1,4 @@
-package com.asabirov.search.data.remote.dto.search_by_text
+package com.asabirov.search.data.remote.dto.place
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class PhotoDto(
     val height: Int,
-    val width: Int,
     @SerializedName("html_attributions")
     val htmlAttributions: List<String>,
     @SerializedName("photo_reference")
-    val photoReference: String
+    val photoReference: String,
+    val width: Int
 )

@@ -11,7 +11,7 @@ class SearchRepositoryImpl(
 
     override suspend fun searchByText(query: String): Result<SearchByTextModel> {
         return try {
-            val searchByTextDto = api.searchByText(query)
+            val searchByTextDto = api.places(query)
             Result.success(
                 searchByTextDto
             ).map { it.toSearchByTextModel() }

@@ -2,23 +2,25 @@ package com.asabirov.search.data.mapper
 
 import com.asabirov.search.BuildConfig
 import com.asabirov.search.data.remote.GoogleMapsApi
-import com.asabirov.search.data.remote.dto.search_by_text.LocationDto
-import com.asabirov.search.data.remote.dto.search_by_text.ResultDto
-import com.asabirov.search.data.remote.dto.search_by_text.SearchByTextDto
+import com.asabirov.search.data.remote.dto.places.LocationDto
+import com.asabirov.search.data.remote.dto.places.PlacesDto
+import com.asabirov.search.data.remote.dto.places.ResultDto
 import com.asabirov.search.domain.model.search_by_text.LocationModel
 import com.asabirov.search.domain.model.search_by_text.PlaceModel
 import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
 
 fun ResultDto.toResultModel(): PlaceModel {
     return PlaceModel(
+        id = placeId,
         name = name,
         photoUrl = setPhotoUrlWithQuery(this),
         location = geometry.location.toLocationModel(),
-        isOpenNow = openingHours?.openNow
+        isOpenNow = openingHours?.openNow,
+        rating = rating
     )
 }
 
-fun SearchByTextDto.toSearchByTextModel(): SearchByTextModel {
+fun PlacesDto.toSearchByTextModel(): SearchByTextModel {
 //    val resultsWithPhoto = this.results.filter { it.photos != null }
     val results = this.results.map { it.toResultModel() }
     return SearchByTextModel(results = results)

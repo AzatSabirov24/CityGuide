@@ -1,4 +1,4 @@
-package com.asabirov.search.data.remote.dto.search_by_text
+package com.asabirov.search.data.remote.dto.places
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName

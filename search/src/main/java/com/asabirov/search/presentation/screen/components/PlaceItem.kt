@@ -33,14 +33,14 @@ import com.asabirov.search.domain.model.search_by_text.PlaceModel
 fun PlaceItem(
     modifier: Modifier = Modifier,
     place: PlaceModel,
-    onClick: () -> Unit,
+    onClick: (String) -> Unit,
     color: Color = Color.Gray
 ) {
     val spacing = LocalSpacing.current
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(40f))
-            .clickable { onClick() }
+            .clickable { onClick(place.id) }
             .border(
                 width = 1.dp,
                 color = color,
@@ -73,23 +73,31 @@ fun PlaceItem(
                 fontSize = 16.sp,
                 modifier = Modifier
                     .padding(
-                        start = spacing.spaceMedium,
+                        start = spacing.spaceSmall,
                         top = spacing.spaceExtraSmall
                     )
                     .weight(1f)
             )
             Text(
-                text = if (place.isOpenNow == true) stringResource(id = R.string.open) else stringResource(
-                    id = R.string.close
-                ),
+                text = if (place.isOpenNow == true) stringResource(id = R.string.open)
+                else stringResource(id = R.string.close),
                 color = if (place.isOpenNow == true) Color.Green else Color.Red,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(
                     end = spacing.spaceMedium,
-                    top = spacing.spaceExtraSmall
+                    top = spacing.spaceExtraSmall,
+                    start = spacing.spaceSmall
                 )
-
             )
         }
+        Text(
+            text = place.rating.toString(),
+            fontSize = 16.sp,
+            modifier = Modifier
+                .padding(
+                    start = spacing.spaceSmall,
+                    bottom = spacing.spaceSmall
+                )
+        )
     }
 }
