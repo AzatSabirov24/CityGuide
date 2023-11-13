@@ -1,6 +1,6 @@
 package com.asabirov.search.domain.use_case
 
-import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
+import com.asabirov.search.domain.model.places.SearchByTextModel
 import com.asabirov.search.domain.repository.SearchRepository
 
 class SearchByText(private val repository: SearchRepository) {

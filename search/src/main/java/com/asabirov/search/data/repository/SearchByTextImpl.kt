@@ -2,7 +2,7 @@ package com.asabirov.search.data.repository
 
 import com.asabirov.search.data.mapper.toSearchByTextModel
 import com.asabirov.search.data.remote.GoogleMapsApi
-import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
+import com.asabirov.search.domain.model.places.SearchByTextModel
 import com.asabirov.search.domain.repository.SearchRepository
 
 class SearchRepositoryImpl(

@@ -5,9 +5,9 @@ import com.asabirov.search.data.remote.GoogleMapsApi
 import com.asabirov.search.data.remote.dto.places.LocationDto
 import com.asabirov.search.data.remote.dto.places.PlacesDto
 import com.asabirov.search.data.remote.dto.places.ResultDto
-import com.asabirov.search.domain.model.search_by_text.LocationModel
-import com.asabirov.search.domain.model.search_by_text.PlaceModel
-import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
+import com.asabirov.search.domain.model.places.LocationModel
+import com.asabirov.search.domain.model.places.PlaceModel
+import com.asabirov.search.domain.model.places.SearchByTextModel
 
 fun ResultDto.toResultModel(): PlaceModel {
     return PlaceModel(

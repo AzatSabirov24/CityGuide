@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class AddressComponentDto(
     @SerializedName("long_name")
-    val longName: String,
+    val longName: String?,
     @SerializedName("short_name")
-    val shortName: String,
+    val shortName: String?,
     val types: List<String>
 )

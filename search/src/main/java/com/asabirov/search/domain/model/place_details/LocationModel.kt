@@ -1,4 +1,4 @@
-package com.asabirov.search.domain.model.search_by_text
+package com.asabirov.search.domain.model.place_details
 
 data class LocationModel(
     val lat: Double,

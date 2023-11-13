@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.core.utils.event.UiEvent
-import com.asabirov.search.domain.model.search_by_text.LocationModel
+import com.asabirov.search.domain.model.places.LocationModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.state.PlacesState

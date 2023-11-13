@@ -1,6 +1,6 @@
 package com.asabirov.search.presentation.event
 
-import com.asabirov.search.domain.model.search_by_text.LocationModel
+import com.asabirov.search.domain.model.places.LocationModel
 
 sealed interface SearchEvent {
 

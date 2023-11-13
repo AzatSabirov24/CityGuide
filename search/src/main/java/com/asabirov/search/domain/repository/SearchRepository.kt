@@ -1,6 +1,6 @@
 package com.asabirov.search.domain.repository
 
-import com.asabirov.search.domain.model.search_by_text.SearchByTextModel
+import com.asabirov.search.domain.model.places.SearchByTextModel
 
 interface SearchRepository {
 

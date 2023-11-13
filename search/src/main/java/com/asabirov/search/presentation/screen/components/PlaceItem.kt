@@ -27,7 +27,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
-import com.asabirov.search.domain.model.search_by_text.PlaceModel
+import com.asabirov.search.domain.model.places.PlaceModel
 
 @Composable
 fun PlaceItem(
