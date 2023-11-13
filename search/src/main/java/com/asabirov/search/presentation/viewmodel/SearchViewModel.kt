@@ -77,16 +77,16 @@ class SearchViewModel @Inject constructor(
                 isSearching = true
             )
             placesState = placesState.copy(places = emptyList())
-            searchUseCases.searchByText(searchState.queryForSearch)
+            searchUseCases.searchPlaces(searchState.queryForSearch)
                 .onSuccess { searchResult ->
-                    println("qqq SearchViewModel->onSuccess->${searchResult.results}")
+                    println("qqq SearchViewModel->onSuccess->${searchResult.places}")
                     searchState = searchState.copy(
                         isSearching = false
                     )
                     placesState = placesState.copy(
-                        places = searchResult.results
+                        places = searchResult.places
                     )
-                    println("qqq SearchViewModel->executeSearch->${searchResult.results}")
+                    println("qqq SearchViewModel->executeSearch->${searchResult.places}")
                 }
                 .onFailure {
                     searchState = searchState.copy(

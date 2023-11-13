@@ -1,7 +1,7 @@
 package com.asabirov.search.domain.di
 
 import com.asabirov.search.domain.repository.SearchRepository
-import com.asabirov.search.domain.use_case.SearchByText
+import com.asabirov.search.domain.use_case.SearchPlaces
 import com.asabirov.search.domain.use_case.SearchUseCases
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ object SearchDomainModule {
         repository: SearchRepository
     ): SearchUseCases {
         return SearchUseCases(
-            searchByText = SearchByText(repository = repository)
+            searchPlaces = SearchPlaces(repository = repository)
         )
     }
 }

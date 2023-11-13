@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen
+package com.asabirov.search.presentation.screen.place_details
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel

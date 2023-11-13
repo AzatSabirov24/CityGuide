@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen
+package com.asabirov.search.presentation.screen.search
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult

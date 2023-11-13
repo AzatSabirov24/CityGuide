@@ -7,7 +7,7 @@ import com.asabirov.search.data.remote.dto.places.PlacesDto
 import com.asabirov.search.data.remote.dto.places.ResultDto
 import com.asabirov.search.domain.model.places.LocationModel
 import com.asabirov.search.domain.model.places.PlaceModel
-import com.asabirov.search.domain.model.places.SearchByTextModel
+import com.asabirov.search.domain.model.places.PlacesModel
 
 fun ResultDto.toResultModel(): PlaceModel {
     return PlaceModel(
@@ -20,10 +20,10 @@ fun ResultDto.toResultModel(): PlaceModel {
     )
 }
 
-fun PlacesDto.toSearchByTextModel(): SearchByTextModel {
+fun PlacesDto.toSearchByTextModel(): PlacesModel {
 //    val resultsWithPhoto = this.results.filter { it.photos != null }
     val results = this.results.map { it.toResultModel() }
-    return SearchByTextModel(results = results)
+    return PlacesModel(places = results)
 }
 
 fun LocationDto.toLocationModel(): LocationModel = LocationModel(lat = lat, lng = lng)

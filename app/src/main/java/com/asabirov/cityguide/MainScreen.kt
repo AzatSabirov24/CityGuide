@@ -42,8 +42,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
-import com.asabirov.search.presentation.screen.MapScreen
-import com.asabirov.search.presentation.screen.SearchScreen
+import com.asabirov.search.presentation.screen.map.MapScreen
+import com.asabirov.search.presentation.screen.search.SearchScreen
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 

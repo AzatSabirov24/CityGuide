@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen
+package com.asabirov.search.presentation.screen.map
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
