@@ -27,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -50,7 +51,8 @@ fun MapPlacesScreen(
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState
+        cameraPositionState = cameraPositionState,
+        properties = MapProperties(isMyLocationEnabled = true)
     ) {
         val items = remember { mutableStateListOf<PlaceClusterItem>() }
         LaunchedEffect(Unit) {
@@ -72,22 +74,20 @@ fun MapPlacesScreen(
                     1000
                 )
             }
-
         }
         Clustering(
             items = items,
             onClusterClick = {
-                cameraPositionState.position = CameraPosition(it.position, 13f, 1f, 1f)
+                cameraPositionState.move(CameraUpdateFactory.zoomIn())
                 true
             },
             onClusterItemClick = {
-                selectPlace =
-                    selectPlace.copy(
-                        itemPosition = LatLng(
-                            it.itemPosition.latitude,
-                            it.itemPosition.longitude
-                        )
+                selectPlace = selectPlace.copy(
+                    itemPosition = LatLng(
+                        it.itemPosition.latitude,
+                        it.itemPosition.longitude
                     )
+                )
                 true
             },
             clusterContent = { cluster ->
@@ -107,9 +107,7 @@ fun MapPlacesScreen(
                         )
                     }
                 }
-            },
-            // Optional: Custom rendering for non-clustered items
-            clusterItemContent = null
+            }
         )
     }
 }
