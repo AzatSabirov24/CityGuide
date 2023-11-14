@@ -9,8 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -32,6 +36,9 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapPlacesScreen(
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
+    var selectPlace by remember {
+        mutableStateOf(SelectedPlace())
+    }
     val places = viewModel.placesState.places
     val cameraPositionState = rememberCameraPositionState {
         places.forEach { place ->
@@ -55,15 +62,32 @@ fun MapPlacesScreen(
                 items.add(PlaceClusterItem(position, it.name, "", 5f))
             }
         }
+        LaunchedEffect(key1 = selectPlace) {
+            selectPlace.itemPosition?.let {
+                cameraPositionState.animate(
+                    CameraUpdateFactory.newLatLngZoom(
+                        it,
+                        16.0f
+                    ),
+                    1000
+                )
+            }
+
+        }
         Clustering(
             items = items,
             onClusterClick = {
                 cameraPositionState.position = CameraPosition(it.position, 13f, 1f, 1f)
                 true
-
             },
             onClusterItemClick = {
-                cameraPositionState.position = CameraPosition(it.position, 18f, 1f, 1f)
+                selectPlace =
+                    selectPlace.copy(
+                        itemPosition = LatLng(
+                            it.itemPosition.latitude,
+                            it.itemPosition.longitude
+                        )
+                    )
                 true
             },
             clusterContent = { cluster ->
@@ -89,6 +113,10 @@ fun MapPlacesScreen(
         )
     }
 }
+
+data class SelectedPlace(
+    val itemPosition: LatLng? = null
+)
 
 
 
