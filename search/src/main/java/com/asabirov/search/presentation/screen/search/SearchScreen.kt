@@ -219,13 +219,7 @@ fun SearchScreen(
         if (viewModel.placesState.places.isNotEmpty()) {
             Button(
                 modifier = Modifier.padding(horizontal = 10.dp),
-                onClick = {
-                    viewModel.onEvent(
-                        SearchEvent.OnClickShowResultsOnMap(
-                            locations = viewModel.placesState.places.map { it.location })
-                    )
-                    navigateToMap()
-                }) {
+                onClick = { navigateToMap() }) {
                 Text(text = stringResource(id = R.string.on_map))
             }
         }

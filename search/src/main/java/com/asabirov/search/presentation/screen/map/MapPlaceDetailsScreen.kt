@@ -14,34 +14,30 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun MapScreen(
+fun MapPlaceDetailsScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val places = viewModel.placesState.places
+    val place = viewModel.placeDetailsState.place
     val cameraPositionState = rememberCameraPositionState {
-        places.forEach { place ->
-            position =
-                CameraPosition.fromLatLngZoom(
-                    LatLng(place.location.lat, place.location.lng),
-                    10f
-                )
-        }
+        position =
+            CameraPosition.fromLatLngZoom(
+                LatLng(place.location?.lat ?: 0.0, place.location?.lng ?: 0.0),
+                10f
+            )
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(isMyLocationEnabled = true)
     ) {
-        places.forEach { place ->
-            Marker(
-                state = MarkerState(position = LatLng(place.location.lat, place.location.lng)),
-                title = place.name
-            )
-        }
+        Marker(
+            state = MarkerState(
+                position = LatLng(
+                    place.location?.lat ?: 0.0,
+                    place.location?.lng ?: 0.0
+                )
+            ),
+            title = place.name
+        )
     }
 }
-
-
-
-
-

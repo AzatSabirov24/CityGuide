@@ -40,7 +40,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
-import com.asabirov.search.presentation.screen.map.MapScreen
+import com.asabirov.search.presentation.screen.map.MapPlaceDetailsScreen
+import com.asabirov.search.presentation.screen.map.MapPlacesScreen
 import com.asabirov.search.presentation.screen.place_details.PlaceDetailsScreen
 import com.asabirov.search.presentation.screen.search.SearchScreen
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
@@ -146,7 +147,7 @@ fun MainScreen() {
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
                             SearchScreen(
                                 navigateToMap = {
-                                    navController.navigate("Map")
+                                    navController.navigate("MapPlaces")
                                 },
                                 openPlaceDetails = {
                                     navController.navigate("PlaceDetails")
@@ -156,19 +157,30 @@ fun MainScreen() {
                         }
                         composable("Favorites") { FavoriteScreen() }
                         composable("Settings") { SettingsScreen() }
-                        composable("Map") {
+                        composable("MapPlaces") {
                             val searchEntry = remember {
                                 navController.getBackStackEntry("Search")
                             }
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
-                            MapScreen(viewModel = searchViewModel)
+                            MapPlacesScreen(viewModel = searchViewModel)
+                        }
+                        composable("MapPlaceDetails") {
+                            val searchEntry = remember {
+                                navController.getBackStackEntry("Search")
+                            }
+                            val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
+                            MapPlaceDetailsScreen(viewModel = searchViewModel)
                         }
                         composable("PlaceDetails") {
                             val searchEntry = remember {
                                 navController.getBackStackEntry("Search")
                             }
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
-                            PlaceDetailsScreen(viewModel = searchViewModel)
+                            PlaceDetailsScreen(
+                                navigateToMap = {
+                                    navController.navigate("MapPlaceDetails")
+                                },
+                                viewModel = searchViewModel)
                         }
                     }
                 }

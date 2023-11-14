@@ -67,13 +67,17 @@ class SearchViewModel @Inject constructor(
                 updateQueryForSearch()
             }
 
-            is SearchEvent.OnClickShowResultsOnMap -> {
-                openSearchResultsOnMap(event.locations)
-            }
+//            is SearchEvent.OnClickShowPlacesOnMap -> {
+//                openSearchResultsOnMap(event.locations)
+//            }
 
             is SearchEvent.OnSelectPlace -> {
                 getPlaceDetails(event.id)
             }
+
+//            is SearchEvent.OnClickShowPlaceDetailsOnMap -> {
+//
+//            }
         }
     }
 
@@ -134,13 +138,13 @@ class SearchViewModel @Inject constructor(
         println("qqq SearchViewModel->updateQueryForSearch->${searchState.queryForSearch}")
     }
 
-    private fun openSearchResultsOnMap(
-        locations: List<LocationModel>
-    ) {
-        viewModelScope.launch {
-            _uiEvent.send(UiEvent.OpenScreen(data = locations))
-        }
-    }
+//    private fun openSearchResultsOnMap(
+//        locations: List<LocationModel>
+//    ) {
+//        viewModelScope.launch {
+//            _uiEvent.send(UiEvent.OpenScreen(data = locations))
+//        }
+//    }
 
     // Get place details
 

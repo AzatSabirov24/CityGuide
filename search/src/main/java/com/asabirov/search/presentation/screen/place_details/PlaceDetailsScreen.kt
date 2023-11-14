@@ -2,19 +2,23 @@ package com.asabirov.search.presentation.screen.place_details
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.phone_dialer.PhoneDialer
@@ -25,6 +29,7 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @Composable
 fun PlaceDetailsScreen(
+    navigateToMap: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state = viewModel.placeDetailsState
@@ -69,24 +74,36 @@ fun PlaceDetailsScreen(
                     modifier = Modifier
                         .padding(horizontal = spacing.spaceSmall)
                 )
-                Text(
-                    text = state.place.phoneNumber ?: "",
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(
-                            top = spacing.spaceSmall,
-                            start = spacing.spaceSmall
-                        )
-                        .clickable {
-                            phoneDialer(state.place.phoneNumber ?: "")
-                        }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = state.place.phoneNumber ?: "",
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .padding(
+                                top = spacing.spaceSmall,
+                                start = spacing.spaceSmall
+                            )
+                            .clickable {
+                                phoneDialer(state.place.phoneNumber ?: "")
+                            }
+                    )
+                    Button(
+                        modifier = Modifier.padding(horizontal = 10.dp),
+                        onClick = { navigateToMap() }) {
+                        Text(text = stringResource(id = R.string.on_map))
+                    }
+                }
+
                 if (state.place.openingTime?.isNotEmpty() == true) {
                     DropDown(
                         text = stringResource(id = R.string.work_time),
                         modifier = Modifier.padding(
                             top = spacing.spaceSmall,
-                            start = spacing.spaceSmall
+                            start = spacing.spaceSmall,
+                            bottom = spacing.spaceSmall
                         )
                     ) {
                         Text(
