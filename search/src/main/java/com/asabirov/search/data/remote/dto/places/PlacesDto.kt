@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class PlacesDto(
-    val results: List<ResultDto>,
+    val results: List<PlaceDto>,
     val status: String,
     @SerializedName("html_attributions")
     val htmlAttributions: List<Any>,

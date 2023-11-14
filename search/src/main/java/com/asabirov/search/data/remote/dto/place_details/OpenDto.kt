@@ -1,4 +1,4 @@
-package com.asabirov.search.data.remote.dto.place
+package com.asabirov.search.data.remote.dto.place_details
 
 import androidx.annotation.Keep
 

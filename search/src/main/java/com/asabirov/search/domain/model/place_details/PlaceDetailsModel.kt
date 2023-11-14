@@ -6,7 +6,7 @@ data class PlaceDetailsModel(
     val openingTime: List<String>? = emptyList(),
     val address: String? = "",
     val phoneNumber: String? = "",
-    val location: LocationModel? = null,
+    val location: PlaceDetailsLocationModel? = null,
     val photos: List<String>? = emptyList(),
     val rating: Double? = 0.0
 )

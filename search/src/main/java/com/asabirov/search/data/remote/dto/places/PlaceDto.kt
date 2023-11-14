@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class ResultDto(
+data class PlaceDto(
     val name: String,
     val photos: List<PhotoDto>?,
     val icon: String,

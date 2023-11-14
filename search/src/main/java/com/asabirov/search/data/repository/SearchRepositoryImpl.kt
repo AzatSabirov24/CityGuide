@@ -1,7 +1,9 @@
 package com.asabirov.search.data.repository
 
-import com.asabirov.search.data.mapper.toSearchByTextModel
+import com.asabirov.search.data.mapper.toPlaceDetailsModel
+import com.asabirov.search.data.mapper.toPlacesModel
 import com.asabirov.search.data.remote.GoogleMapsApi
+import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 import com.asabirov.search.domain.model.places.PlacesModel
 import com.asabirov.search.domain.repository.SearchRepository
 
@@ -11,10 +13,18 @@ class SearchRepositoryImpl(
 
     override suspend fun places(query: String): Result<PlacesModel> {
         return try {
-            val searchByTextDto = api.places(query)
-            Result.success(
-                searchByTextDto
-            ).map { it.toSearchByTextModel() }
+            val placesDto = api.places(query)
+            Result.success(placesDto).map { it.toPlacesModel() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun placeDetails(id: String): Result<PlaceDetailsModel> {
+        return try {
+            val placeDetailsDto = api.placeDetails(id)
+            Result.success(placeDetailsDto).map { it.toPlaceDetailsModel() }
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
