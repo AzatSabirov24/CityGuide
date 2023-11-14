@@ -1,6 +1,7 @@
 package com.asabirov.search.presentation.screen.place_details
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.core.utils.phone_dialer.PhoneDialer
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.presentation.screen.components.DropDown
@@ -26,6 +29,8 @@ fun PlaceDetailsScreen(
 ) {
     val state = viewModel.placeDetailsState
     val spacing = LocalSpacing.current
+    val context = LocalContext.current
+    val phoneDialer = PhoneDialer(context)
 
     Column(
         modifier = Modifier
@@ -72,6 +77,9 @@ fun PlaceDetailsScreen(
                             top = spacing.spaceSmall,
                             start = spacing.spaceSmall
                         )
+                        .clickable {
+                            phoneDialer(state.place.phoneNumber ?: "")
+                        }
                 )
                 if (state.place.openingTime?.isNotEmpty() == true) {
                     DropDown(
@@ -90,9 +98,7 @@ fun PlaceDetailsScreen(
                         )
                     }
                 }
-
             }
         }
     }
-
 }

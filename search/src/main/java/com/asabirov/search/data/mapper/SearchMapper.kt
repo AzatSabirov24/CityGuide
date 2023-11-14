@@ -40,7 +40,7 @@ fun PlaceDetailsDto.toPlaceDetailsModel(): PlaceDetailsModel {
         name = result.name,
         openingTime = result.currentOpeningHours?.weekdayText,
         address = result.formattedAddress,
-        phoneNumber = result.formattedPhoneNumber,
+        phoneNumber = result.internationalPhoneNumber,
         location = result.geometry.location.toPlaceDetailsLocationModel(),
         photos = result.photos?.toPhotoModels(),
         rating = result.rating
