@@ -8,6 +8,7 @@ import com.asabirov.search.data.remote.dto.place_details.PlaceDetailsLocationDto
 import com.asabirov.search.data.remote.dto.places.LocationDto
 import com.asabirov.search.data.remote.dto.places.PlaceDto
 import com.asabirov.search.data.remote.dto.places.PlacesDto
+import com.asabirov.search.domain.model.place_details.PhotoModel
 import com.asabirov.search.domain.model.place_details.PlaceDetailsLocationModel
 import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 import com.asabirov.search.domain.model.places.LocationModel
@@ -18,7 +19,7 @@ fun PlaceDto.toPlaceModel(): PlaceModel {
     return PlaceModel(
         id = placeId,
         name = name,
-        photoUrl = setPhotoUrlWithQuery(this),
+        photoUrl = setPhotoUrlWithQuery(photos?.firstOrNull()?.photoReference),
         location = geometry.location.toLocationModel(),
         isOpenNow = openingHours?.openNow,
         rating = rating
@@ -33,26 +34,15 @@ fun PlacesDto.toPlacesModel(): PlacesModel {
 
 fun LocationDto.toLocationModel(): LocationModel = LocationModel(lat = lat, lng = lng)
 
-fun setPhotoUrlWithQuery(placeDto: PlaceDto?): String {
-    val photoReference = placeDto?.photos?.firstOrNull()?.photoReference
-    var photoUrlWithQuery = ""
-    val photoEndPoint = "api/place/photo"
-    photoReference?.let {
-        photoUrlWithQuery =
-            "${GoogleMapsApi.BASE_URL}$photoEndPoint?maxwidth=400&photoreference=$it&key=${BuildConfig.MAPS_API_KEY}"
-    }
-    return photoUrlWithQuery
-}
-
 fun PlaceDetailsDto.toPlaceDetailsModel(): PlaceDetailsModel {
     return PlaceDetailsModel(
         id = result.placeId,
         name = result.name,
-        openingTime = result.currentOpeningHours.weekdayText,
+        openingTime = result.currentOpeningHours?.weekdayText,
         address = result.formattedAddress,
         phoneNumber = result.formattedPhoneNumber,
         location = result.geometry.location.toPlaceDetailsLocationModel(),
-        photos = result.photos.toPhotos(),
+        photos = result.photos?.toPhotoModels(),
         rating = result.rating
     )
 }
@@ -60,8 +50,20 @@ fun PlaceDetailsDto.toPlaceDetailsModel(): PlaceDetailsModel {
 fun PlaceDetailsLocationDto.toPlaceDetailsLocationModel() =
     PlaceDetailsLocationModel(lat = lat, lng = lng)
 
-fun List<PhotoDto>.toPhotos(): List<String> {
-    val photos = mutableListOf<String>()
-    photos.addAll(this.map { it.photoReference })
+fun List<PhotoDto>.toPhotoModels(): List<PhotoModel> {
+    val photos = mutableListOf<PhotoModel>()
+    photos.addAll(this.map {
+        PhotoModel(url = setPhotoUrlWithQuery(it.photoReference))
+    })
     return photos
+}
+
+fun setPhotoUrlWithQuery(photoReference: String?): String {
+    var photoUrlWithQuery = ""
+    val photoEndPoint = "api/place/photo"
+    photoReference?.let {
+        photoUrlWithQuery =
+            "${GoogleMapsApi.BASE_URL}$photoEndPoint?maxwidth=400&photoreference=$it&key=${BuildConfig.MAPS_API_KEY}"
+    }
+    return photoUrlWithQuery
 }

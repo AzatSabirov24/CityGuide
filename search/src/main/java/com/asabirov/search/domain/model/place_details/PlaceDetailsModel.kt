@@ -7,6 +7,6 @@ data class PlaceDetailsModel(
     val address: String? = "",
     val phoneNumber: String? = "",
     val location: PlaceDetailsLocationModel? = null,
-    val photos: List<String>? = emptyList(),
+    val photos: List<PhotoModel>? = emptyList(),
     val rating: Double? = 0.0
 )

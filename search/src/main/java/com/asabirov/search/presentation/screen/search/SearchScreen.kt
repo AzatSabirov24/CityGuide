@@ -82,14 +82,6 @@ fun SearchScreen(
     }
     val searchState = viewModel.searchState
 
-//    LaunchedEffect(key1 = keyboardController) {
-//        viewModel.uiEvent.collect { event ->
-//            when (event) {
-//                is UiEvent.OpenScreen -> onNavigateToMap()
-//                else -> Unit
-//            }
-//        }
-//    }
     Column(
         modifier = Modifier.padding()
     ) {

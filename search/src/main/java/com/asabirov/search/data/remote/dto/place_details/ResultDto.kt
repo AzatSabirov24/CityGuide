@@ -15,7 +15,7 @@ data class ResultDto(
     @SerializedName("business_status")
     val businessStatus: String,
     @SerializedName("current_opening_hours")
-    val currentOpeningHours: CurrentOpeningHoursDto,
+    val currentOpeningHours: CurrentOpeningHoursDto?,
     @SerializedName("formatted_address")
     val formattedAddress: String,
     @SerializedName("formatted_phone_number")
@@ -30,7 +30,7 @@ data class ResultDto(
     val internationalPhoneNumber: String,
     @SerializedName("opening_hours")
     val openingHours: OpeningHoursDto,
-    val photos: List<PhotoDto>,
+    val photos: List<PhotoDto>?,
     @SerializedName("plus_code")
     val plusCode: PlusCodeDto,
     val rating: Double,

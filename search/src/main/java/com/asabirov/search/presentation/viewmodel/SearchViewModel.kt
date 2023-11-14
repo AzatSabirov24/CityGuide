@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 import com.asabirov.search.domain.model.places.LocationModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
@@ -29,7 +30,7 @@ class SearchViewModel @Inject constructor(
     var placesState by mutableStateOf(PlacesState())
         private set
 
-    var placeDetailsState by mutableStateOf(PlaceDetailsState())
+    var placeDetailsState by mutableStateOf(PlaceDetailsState(place = PlaceDetailsModel()))
         private set
 
     private val _uiEvent = Channel<UiEvent>()

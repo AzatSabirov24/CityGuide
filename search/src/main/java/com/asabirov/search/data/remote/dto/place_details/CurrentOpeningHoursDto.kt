@@ -9,5 +9,5 @@ data class CurrentOpeningHoursDto(
     val openNow: Boolean,
     val periodDtos: List<PeriodDto>,
     @SerializedName("weekday_text")
-    val weekdayText: List<String>
+    val weekdayText: List<String>?
 )
