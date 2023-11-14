@@ -59,7 +59,9 @@ fun DropDown(
             Text(
                 text = text,
                 color = Color.DarkGray,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .clickable { isOpen = !isOpen }
             )
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
