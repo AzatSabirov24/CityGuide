@@ -95,14 +95,17 @@ fun PlaceItem(
                 )
             )
         }
-        Text(
-            text = place.rating.toString(),
-            fontSize = 16.sp,
-            modifier = Modifier
-                .padding(
-                    start = spacing.spaceSmall,
-                    bottom = spacing.spaceSmall
-                )
-        )
+//        place.
+        place.rating?.let {
+            Text(
+                text = it.toString(),
+                fontSize = 16.sp,
+                modifier = Modifier
+                    .padding(
+                        start = spacing.spaceSmall,
+                        bottom = spacing.spaceSmall
+                    )
+            )
+        }
     }
 }

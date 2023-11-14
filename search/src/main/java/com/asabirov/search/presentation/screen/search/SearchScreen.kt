@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
-import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.screen.components.SearchTextField
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @OptIn(
@@ -85,7 +85,7 @@ fun SearchScreen(
     ) {
         isLocationPermissionsGranted = locationService.hasLocationPermission()
         SearchTextField(
-            text = searchState.city,
+            text = "kazan",
             onValueChange = {
                 isHideKeyboard = false
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
