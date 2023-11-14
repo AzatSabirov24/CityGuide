@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 data class ViewportDto(
-    val northeastDto: NortheastDto,
-    val southwestDto: SouthwestDto
+    val northeast: NortheastDto,
+    val southwest: SouthwestDto
 )

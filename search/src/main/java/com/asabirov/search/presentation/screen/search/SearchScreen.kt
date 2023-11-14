@@ -26,7 +26,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,7 +38,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
@@ -55,7 +53,8 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 )
 @Composable
 fun SearchScreen(
-    onNavigateToMap: () -> Unit,
+    navigateToMap: () -> Unit,
+    openPlaceDetails: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -83,14 +82,14 @@ fun SearchScreen(
     }
     val searchState = viewModel.searchState
 
-    LaunchedEffect(key1 = keyboardController) {
-        viewModel.uiEvent.collect { event ->
-            when (event) {
-                is UiEvent.OpenScreen -> onNavigateToMap()
-                else -> Unit
-            }
-        }
-    }
+//    LaunchedEffect(key1 = keyboardController) {
+//        viewModel.uiEvent.collect { event ->
+//            when (event) {
+//                is UiEvent.OpenScreen -> onNavigateToMap()
+//                else -> Unit
+//            }
+//        }
+//    }
     Column(
         modifier = Modifier.padding()
     ) {
@@ -220,7 +219,10 @@ fun SearchScreen(
                 PlaceItem(
                     modifier = Modifier.padding(4.dp),
                     place = place,
-                    onClick = { viewModel.onEvent(SearchEvent.OnSelectPlace(place.id)) }
+                    onClick = {
+                        viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
+                        openPlaceDetails()
+                    }
                 )
             }
         }
@@ -232,6 +234,7 @@ fun SearchScreen(
                         SearchEvent.OnClickShowResultsOnMap(
                             locations = viewModel.placesState.places.map { it.location })
                     )
+                    navigateToMap()
                 }) {
                 Text(text = stringResource(id = R.string.on_map))
             }

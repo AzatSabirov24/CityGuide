@@ -20,7 +20,7 @@ data class ResultDto(
     val formattedAddress: String,
     @SerializedName("formatted_phone_number")
     val formattedPhoneNumber: String,
-    val geometryDto: GeometryDto,
+    val geometry: GeometryDto,
     val icon: String,
     @SerializedName("icon_background_color")
     val iconBackgroundColor: String,
@@ -30,12 +30,12 @@ data class ResultDto(
     val internationalPhoneNumber: String,
     @SerializedName("opening_hours")
     val openingHours: OpeningHoursDto,
-    val photoDtos: List<PhotoDto>,
+    val photos: List<PhotoDto>,
     @SerializedName("plus_code")
     val plusCode: PlusCodeDto,
     val rating: Double,
     val reference: String,
-    val reviewDtos: List<ReviewDto>,
+    val reviews: List<ReviewDto>,
     val types: List<String>,
     val url: String,
     @SerializedName("user_ratings_total")

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class OpeningHoursDto(
     @SerializedName("open_now")
     val openNow: Boolean,
-    val periodDtos: List<PeriodDto>,
+    val periods: List<PeriodDto>,
     @SerializedName("weekday_text")
     val weekdayText: List<String>
 )

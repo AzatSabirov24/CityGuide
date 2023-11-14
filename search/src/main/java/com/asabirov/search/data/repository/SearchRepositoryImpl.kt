@@ -24,6 +24,7 @@ class SearchRepositoryImpl(
     override suspend fun placeDetails(id: String): Result<PlaceDetailsModel> {
         return try {
             val placeDetailsDto = api.placeDetails(id)
+            println("qqq SearchRepositoryImpl->placeDetails->${placeDetailsDto}")
             Result.success(placeDetailsDto).map { it.toPlaceDetailsModel() }
         } catch (e: Exception) {
             e.printStackTrace()

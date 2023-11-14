@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 data class GeometryDto(
-    val locationDto: PlaceDetailsLocationDto,
-    val viewportDto: ViewportDto
+    val location: PlaceDetailsLocationDto,
+    val viewport: ViewportDto
 )

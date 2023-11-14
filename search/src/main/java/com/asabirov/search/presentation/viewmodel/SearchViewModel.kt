@@ -92,7 +92,6 @@ class SearchViewModel @Inject constructor(
                     placesState = placesState.copy(
                         places = searchResult.places
                     )
-                    println("qqq SearchViewModel->executeSearch->${searchResult.places}")
                 }
                 .onFailure {
                     searchState = searchState.copy(
@@ -145,27 +144,26 @@ class SearchViewModel @Inject constructor(
     // Get place details
 
     private fun getPlaceDetails(id: String) {
+        println("qqq SearchViewModel->getPlaceDetails->${id}")
         viewModelScope.launch {
             placeDetailsState = placeDetailsState.copy(
                 isSearching = true
             )
             searchUseCases.placeDetails(id)
                 .onSuccess { place ->
-                    println("qqq SearchViewModel->onSuccess->${place}")
+                    println("qqq getPlaceDetails->onSuccess->${place}")
                     placeDetailsState = placeDetailsState.copy(
                         isSearching = false,
                         place = place
                     )
-                    println("qqq SearchViewModel->executeSearch->${place}")
                 }
                 .onFailure {
                     placeDetailsState = placeDetailsState.copy(
                         isSearching = false,
                         error = it.message ?: ""
                     )
-                    println("qqq SearchViewModel->onFailure->${it.message}")
+                    println("qqq getPlaceDetails->onFailure->${it.message}")
                 }
         }
     }
-
 }

@@ -43,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
 import com.asabirov.search.presentation.screen.map.MapScreen
+import com.asabirov.search.presentation.screen.place_details.PlaceDetailsScreen
 import com.asabirov.search.presentation.screen.search.SearchScreen
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
@@ -146,8 +147,11 @@ fun MainScreen() {
                             }
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
                             SearchScreen(
-                                onNavigateToMap = {
+                                navigateToMap = {
                                     navController.navigate("Map")
+                                },
+                                openPlaceDetails = {
+                                    navController.navigate("PlaceDetails")
                                 },
                                 viewModel = searchViewModel
                             )
@@ -166,7 +170,7 @@ fun MainScreen() {
                                 navController.getBackStackEntry("PlaceDetails")
                             }
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
-                            MapScreen(viewModel = searchViewModel)
+                            PlaceDetailsScreen(viewModel = searchViewModel)
                         }
                     }
                 }

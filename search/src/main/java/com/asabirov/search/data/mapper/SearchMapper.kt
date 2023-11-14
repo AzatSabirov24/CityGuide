@@ -46,14 +46,14 @@ fun setPhotoUrlWithQuery(placeDto: PlaceDto?): String {
 
 fun PlaceDetailsDto.toPlaceDetailsModel(): PlaceDetailsModel {
     return PlaceDetailsModel(
-        id = resultDto.placeId,
-        name = resultDto.name,
-        openingTime = resultDto.currentOpeningHours.weekdayText,
-        address = resultDto.formattedAddress,
-        phoneNumber = resultDto.formattedPhoneNumber,
-        location = resultDto.geometryDto.locationDto.toPlaceDetailsLocationModel(),
-        photos = resultDto.photoDtos.toPhotos(),
-        rating = resultDto.rating
+        id = result.placeId,
+        name = result.name,
+        openingTime = result.currentOpeningHours.weekdayText,
+        address = result.formattedAddress,
+        phoneNumber = result.formattedPhoneNumber,
+        location = result.geometry.location.toPlaceDetailsLocationModel(),
+        photos = result.photos.toPhotos(),
+        rating = result.rating
     )
 }
 

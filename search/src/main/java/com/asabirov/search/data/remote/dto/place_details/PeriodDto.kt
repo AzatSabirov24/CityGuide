@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 data class PeriodDto(
-    val closeDto: CloseDto,
-    val openDto: OpenDto
+    val close: CloseDto,
+    val open: OpenDto
 )
