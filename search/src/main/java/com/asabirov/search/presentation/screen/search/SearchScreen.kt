@@ -220,7 +220,7 @@ fun SearchScreen(
                 PlaceItem(
                     modifier = Modifier.padding(4.dp),
                     place = place,
-                    onClick = { }
+                    onClick = { viewModel.onEvent(SearchEvent.OnSelectPlace(place.id)) }
                 )
             }
         }

@@ -11,4 +11,5 @@ sealed interface SearchEvent {
     data class OnRemovePlace(val placeName: String) : SearchEvent
     data object OnRemoveAllPlaces : SearchEvent
     data class OnClickShowResultsOnMap(val locations: List<LocationModel>) : SearchEvent
+    data class OnSelectPlace(val id: String) : SearchEvent
 }

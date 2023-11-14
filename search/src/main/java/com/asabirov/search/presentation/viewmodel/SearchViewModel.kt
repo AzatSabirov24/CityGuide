@@ -9,6 +9,7 @@ import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.search.domain.model.places.LocationModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.state.PlaceDetailsState
 import com.asabirov.search.presentation.state.PlacesState
 import com.asabirov.search.presentation.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,9 @@ class SearchViewModel @Inject constructor(
         private set
 
     var placesState by mutableStateOf(PlacesState())
+        private set
+
+    var placeDetailsState by mutableStateOf(PlaceDetailsState())
         private set
 
     private val _uiEvent = Channel<UiEvent>()
@@ -63,14 +67,16 @@ class SearchViewModel @Inject constructor(
             }
 
             is SearchEvent.OnClickShowResultsOnMap -> {
-                println("qqq SearchViewModel->onEvent->")
-                openSearchResultsOnMap(
-                    event.locations
-                )
+                openSearchResultsOnMap(event.locations)
+            }
+
+            is SearchEvent.OnSelectPlace -> {
+                getPlaceDetails(event.id)
             }
         }
     }
 
+    // Search places
     private fun executeSearch() {
         viewModelScope.launch {
             searchState = searchState.copy(
@@ -135,4 +141,31 @@ class SearchViewModel @Inject constructor(
             _uiEvent.send(UiEvent.OpenScreen(data = locations))
         }
     }
+
+    // Get place details
+
+    private fun getPlaceDetails(id: String) {
+        viewModelScope.launch {
+            placeDetailsState = placeDetailsState.copy(
+                isSearching = true
+            )
+            searchUseCases.placeDetails(id)
+                .onSuccess { place ->
+                    println("qqq SearchViewModel->onSuccess->${place}")
+                    placeDetailsState = placeDetailsState.copy(
+                        isSearching = false,
+                        place = place
+                    )
+                    println("qqq SearchViewModel->executeSearch->${place}")
+                }
+                .onFailure {
+                    placeDetailsState = placeDetailsState.copy(
+                        isSearching = false,
+                        error = it.message ?: ""
+                    )
+                    println("qqq SearchViewModel->onFailure->${it.message}")
+                }
+        }
+    }
+
 }
