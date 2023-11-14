@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.components
+package com.asabirov.search.presentation.screen.search
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.asabirov.core.extensions.isNotNullAndFalse
+import com.asabirov.core.extensions.isNotNullAndTrue
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.domain.model.places.PlaceModel
@@ -79,8 +81,11 @@ fun PlaceItem(
                     .weight(1f)
             )
             Text(
-                text = if (place.isOpenNow == true) stringResource(id = R.string.open)
-                else stringResource(id = R.string.close),
+                text = when {
+                    place.isOpenNow.isNotNullAndTrue() -> stringResource(id = R.string.open)
+                    place.isOpenNow.isNotNullAndFalse() -> stringResource(id = R.string.close)
+                    else -> ""
+                },
                 color = if (place.isOpenNow == true) Color.Green else Color.Red,
                 fontSize = 12.sp,
                 modifier = Modifier.padding(
