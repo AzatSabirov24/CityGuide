@@ -33,17 +33,17 @@ fun MapPlacesScreen(
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
     val places = viewModel.placesState.places
+    val cameraPositionState = rememberCameraPositionState {
+        places.forEach { place ->
+            position = CameraPosition.fromLatLngZoom(
+                LatLng(place.location.lat, place.location.lng),
+                11f
+            )
+        }
+    }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
-        cameraPositionState = rememberCameraPositionState {
-            places.forEach { place ->
-                position =
-                    CameraPosition.fromLatLngZoom(
-                        LatLng(place.location.lat, place.location.lng),
-                        10f
-                    )
-            }
-        }
+        cameraPositionState = cameraPositionState
     ) {
         val items = remember { mutableStateListOf<PlaceClusterItem>() }
         LaunchedEffect(Unit) {
@@ -52,31 +52,27 @@ fun MapPlacesScreen(
                     it.location.lat,
                     it.location.lng,
                 )
-                items.add(PlaceClusterItem(position, it.name, "", 0f))
+                items.add(PlaceClusterItem(position, it.name, "", 5f))
             }
         }
         Clustering(
             items = items,
-            // Optional: Handle clicks on clusters, cluster items, and cluster item info windows
             onClusterClick = {
-                println("Cluster clicked! $it")
-                false
+                cameraPositionState.position = CameraPosition(it.position, 13f, 1f, 1f)
+                true
+
             },
             onClusterItemClick = {
-                println("Cluster item clicked! $it")
-                false
+                cameraPositionState.position = CameraPosition(it.position, 18f, 1f, 1f)
+                true
             },
-            onClusterItemInfoWindowClick = {
-                println("Cluster item info window clicked! $it")
-            },
-            // Optional: Custom rendering for clusters
             clusterContent = { cluster ->
                 Surface(
                     Modifier.size(40.dp),
                     shape = CircleShape,
                     color = Color.Blue,
                     contentColor = Color.White,
-                    border = BorderStroke(1.dp, Color.White)
+                    border = BorderStroke(1.dp, Color.Green)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Text(
