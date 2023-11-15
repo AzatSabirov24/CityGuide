@@ -149,19 +149,30 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun getMorePlacesOnMap() {
+        searchState = searchState.copy(
+            isSearching = true
+        )
         viewModelScope.launch {
             searchUseCases.searchPlaces(
                 query = searchState.queryForSearch,
                 nextPageToken = placesState.nextPageToken
             )
-                .onSuccess {searchResult ->
-
-                    println("qqq SearchViewModel->searchResult new places->${searchResult.places}")
+                .onSuccess { searchResult ->
                     val places = placesState.places.toMutableList()
                     places.addAll(searchResult.places)
-                    placesState = placesState.copy(places = places)
+                    println("qqq SearchViewModel->searchResult new places->${searchResult.nextPageToken}")
+                    searchState = searchState.copy(
+                        isSearching = false
+                    )
+                    placesState = placesState.copy(
+                        nextPageToken = searchResult.nextPageToken,
+                        places = places
+                    )
                 }
                 .onFailure {
+                    searchState = searchState.copy(
+                        isSearching = false
+                    )
                     println("qqq SearchViewModel->onFailure new places->${it.message}")
                 }
         }

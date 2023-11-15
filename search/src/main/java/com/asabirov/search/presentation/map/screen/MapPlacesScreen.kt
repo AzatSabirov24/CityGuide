@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,85 +53,88 @@ fun MapPlacesScreen(
             )
         }
     }
-    LaunchedEffect(key1 = places.size) {
-        println("qqq ->MapPlacesScreen->${places.size}")
-    }
-
-    GoogleMap(
-        modifier = Modifier.fillMaxSize(),
-        cameraPositionState = cameraPositionState,
-        properties = MapProperties(isMyLocationEnabled = true)
-    ) {
-        val items = remember { mutableStateListOf<PlaceClusterItem>() }
-        val scope = rememberCoroutineScope()
-        LaunchedEffect(places.size) {
-            places.forEach {
-                val position = LatLng(
-                    it.location.lat,
-                    it.location.lng,
-                )
-                items.add(PlaceClusterItem(position, it.name, "", 1f))
+    Box(modifier = Modifier.fillMaxSize()) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(isMyLocationEnabled = true)
+        ) {
+            val items = remember { mutableStateListOf<PlaceClusterItem>() }
+            val scope = rememberCoroutineScope()
+            LaunchedEffect(places.size) {
+                places.forEach {
+                    val position = LatLng(
+                        it.location.lat,
+                        it.location.lng,
+                    )
+                    items.add(PlaceClusterItem(position, it.name, "", 1f))
+                }
             }
-        }
-        Clustering(
-            items = items,
-            onClusterClick = { cluster ->
-                val builder = LatLngBounds.builder()
-                for (item in cluster.items) {
-                    builder.include(item.position)
-                }
-                val bounds = builder.build()
-                scope.launch {
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newLatLngBounds(bounds, 50),
-                        1000
-                    )
-                }
-                true
-            },
-            onClusterItemClick = {
-                scope.launch {
-                    cameraPositionState.animate(
-                        CameraUpdateFactory.newLatLngZoom(
-                            LatLng(
-                                it.itemPosition.latitude,
-                                it.itemPosition.longitude
-                            ), 18f
-                        ),
-                        1000
-                    )
-                }
-                true
-            },
-            clusterContent = { cluster ->
-                Surface(
-                    Modifier.size(40.dp),
-                    shape = CircleShape,
-                    color = Color.Blue,
-                    contentColor = Color.White,
-                    border = BorderStroke(1.dp, Color.Green)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            "%,d".format(cluster.size),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Black,
-                            textAlign = TextAlign.Center
+            Clustering(
+                items = items,
+                onClusterClick = { cluster ->
+                    val builder = LatLngBounds.builder()
+                    for (item in cluster.items) {
+                        builder.include(item.position)
+                    }
+                    val bounds = builder.build()
+                    scope.launch {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngBounds(bounds, 50),
+                            1000
                         )
                     }
+                    true
+                },
+                onClusterItemClick = {
+                    scope.launch {
+                        cameraPositionState.animate(
+                            CameraUpdateFactory.newLatLngZoom(
+                                LatLng(
+                                    it.itemPosition.latitude,
+                                    it.itemPosition.longitude
+                                ), 18f
+                            ),
+                            1000
+                        )
+                    }
+                    true
+                },
+                clusterContent = { cluster ->
+                    Surface(
+                        Modifier.size(40.dp),
+                        shape = CircleShape,
+                        color = Color.Blue,
+                        contentColor = Color.White,
+                        border = BorderStroke(1.dp, Color.Green)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                "%,d".format(cluster.size),
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Black,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                },
+                clusterItemContent = {
+                    Marker(it.itemTitle)
                 }
-            },
-            clusterItemContent = {
-                Marker(it.itemTitle)
-            }
-        )
-    }
-    Button(
-        modifier = Modifier.padding(10.dp),
-        onClick = {
-            viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
+            )
         }
-    ) {
-        Text(text = stringResource(id = R.string.download_more))
+        if (viewModel.placesState.nextPageToken != null) {
+            Button(
+                modifier = Modifier.padding(10.dp),
+                onClick = {
+                    viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.download_more))
+            }
+        }
+        if (viewModel.searchState.isSearching) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
     }
 }
