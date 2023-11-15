@@ -1,8 +1,5 @@
 package com.asabirov.search.presentation.screen.search
 
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -41,8 +38,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
-import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.components.SearchTextField
+import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @OptIn(
@@ -64,28 +61,16 @@ fun SearchScreen(
         isHideKeyboard = true
     }
     val spacing = LocalSpacing.current
-    val requestPermissionLauncher =
-        rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted: Boolean ->
-                if (isGranted) {
-                    locationService.getCurrentCity(locationService.hasLocationPermission()) {
-                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it ?: ""))
-                    }
-                }
-            }
-        )
     var isLocationPermissionsGranted by remember {
         mutableStateOf(false)
     }
     val searchState = viewModel.searchState
-
     Column(
         modifier = Modifier.padding()
     ) {
         isLocationPermissionsGranted = locationService.hasLocationPermission()
         SearchTextField(
-            text = "kazan",
+            text = searchState.city,
             onValueChange = {
                 isHideKeyboard = false
                 viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
@@ -98,8 +83,11 @@ fun SearchScreen(
             iconLeft = {
                 IconButton(
                     onClick = {
-                        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = viewModel.searchState.city))
+                        if (isLocationPermissionsGranted) {
+                            locationService.getCurrentCity(locationService.hasLocationPermission()) {
+                                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it ?: ""))
+                            }
+                        }
                         isHideKeyboard = false
                     },
                 ) {
@@ -219,7 +207,12 @@ fun SearchScreen(
         if (viewModel.placesState.places.isNotEmpty()) {
             Button(
                 modifier = Modifier.padding(horizontal = 10.dp),
-                onClick = { navigateToMap() }) {
+                onClick = {
+                    if (isLocationPermissionsGranted) {
+                        navigateToMap()
+                    }
+                }
+            ) {
                 Text(text = stringResource(id = R.string.on_map))
             }
         }
