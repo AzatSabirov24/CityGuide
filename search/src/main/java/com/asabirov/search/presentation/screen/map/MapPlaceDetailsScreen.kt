@@ -3,7 +3,6 @@ package com.asabirov.search.presentation.screen.map
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,7 +19,6 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MarkerComposable
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -44,15 +42,12 @@ fun MapPlaceDetailsScreen(
                 12f
             )
     }
-    val scope = rememberCoroutineScope()
-    DisposableEffect(Unit) {
-        onDispose { scope.cancel() }
-    }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(isMyLocationEnabled = true)
     ) {
+        val scope = rememberCoroutineScope()
         if (isMarkerClicked) {
             scope.launch {
                 cameraPositionState.animate(
@@ -75,7 +70,7 @@ fun MapPlaceDetailsScreen(
                 true
             }
         ) {
-            Marker()
+            Marker(text = place.name ?: "")
         }
     }
 }

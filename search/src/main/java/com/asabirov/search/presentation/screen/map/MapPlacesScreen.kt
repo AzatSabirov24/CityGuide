@@ -8,14 +8,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +32,6 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 @OptIn(MapsComposeExperimentalApi::class)
@@ -42,15 +39,9 @@ import kotlinx.coroutines.launch
 fun MapPlacesScreen(
     viewModel: SearchViewModel = hiltViewModel(),
 ) {
-    var selectPlace by remember {
-        mutableStateOf(SelectedPlace())
-    }
     val places by remember {
         mutableStateOf(viewModel.placesState.places)
     }
-//    val placeLatLng by remember {
-//        mutableStateOf(LatLng(places.location.lat, places.location.lng))
-//    }
     val cameraPositionState = rememberCameraPositionState {
         places.forEach { place ->
             position = CameraPosition.fromLatLngZoom(
@@ -59,41 +50,27 @@ fun MapPlacesScreen(
             )
         }
     }
-    val scope = rememberCoroutineScope()
-    DisposableEffect(Unit) {
-        onDispose { scope.cancel() }
-    }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = MapProperties(isMyLocationEnabled = true)
     ) {
         val items = remember { mutableStateListOf<PlaceClusterItem>() }
+        val scope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             places.forEach {
                 val position = LatLng(
                     it.location.lat,
                     it.location.lng,
                 )
-                items.add(PlaceClusterItem(position, it.name, "", 5f))
-            }
-        }
-        LaunchedEffect(key1 = selectPlace) {
-            selectPlace.itemPosition?.let {
-                cameraPositionState.animate(
-                    CameraUpdateFactory.newLatLngZoom(
-                        it,
-                        16.0f
-                    ),
-                    1000
-                )
+                items.add(PlaceClusterItem(position, it.name, "", 1f))
             }
         }
         Clustering(
             items = items,
-            onClusterClick = {
+            onClusterClick = { cluster ->
                 val builder = LatLngBounds.builder()
-                for (item in it.items) {
+                for (item in cluster.items) {
                     builder.include(item.position)
                 }
                 val bounds = builder.build()
@@ -106,12 +83,17 @@ fun MapPlacesScreen(
                 true
             },
             onClusterItemClick = {
-                selectPlace = selectPlace.copy(
-                    itemPosition = LatLng(
-                        it.itemPosition.latitude,
-                        it.itemPosition.longitude
+                scope.launch {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngZoom(
+                            LatLng(
+                                it.itemPosition.latitude,
+                                it.itemPosition.longitude
+                            ), 18f
+                        ),
+                        1000
                     )
-                )
+                }
                 true
             },
             clusterContent = { cluster ->
@@ -132,38 +114,9 @@ fun MapPlacesScreen(
                     }
                 }
             },
-//            clusterRenderer = ClusterRenderer
+            clusterItemContent = {
+                Marker(it.itemTitle)
+            }
         )
-//        places.forEach { place ->
-//            val markerState =
-//                rememberMarkerState(
-//                    position = LatLng(
-//                        place.location.lat,
-//                        place.location.lng
-//                    )
-//                )
-//            MarkerComposable(
-//                state = markerState,
-//                onClick = { marker ->
-//                    selectPlace = selectPlace.copy(
-//                        itemPosition = LatLng(
-//                            marker.position.latitude,
-//                            marker.position.longitude
-//                        )
-//                    )
-//                    true
-//                }
-//            ) {
-//                Marker(place.name)
-//            }
-//        }
     }
 }
-
-data class SelectedPlace(
-    val itemPosition: LatLng? = null
-)
-
-
-
-
