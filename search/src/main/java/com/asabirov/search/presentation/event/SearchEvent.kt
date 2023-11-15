@@ -8,7 +8,6 @@ sealed interface SearchEvent {
     data class OnAddPlaceByClickTag(val placeName: String) : SearchEvent
     data class OnRemovePlace(val placeName: String) : SearchEvent
     data object OnRemoveAllPlaces : SearchEvent
-//    data class OnClickShowPlacesOnMap(val locations: List<LocationModel>) : SearchEvent
-//    data class OnClickShowPlaceDetailsOnMap(val location: PlaceDetailsLocationModel?) : SearchEvent
+    data object OnDownloadMorePlaces : SearchEvent
     data class OnSelectPlace(val id: String) : SearchEvent
 }

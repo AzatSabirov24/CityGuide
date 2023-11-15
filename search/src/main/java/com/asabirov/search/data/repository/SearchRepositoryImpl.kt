@@ -11,9 +11,12 @@ class SearchRepositoryImpl(
     private val api: GoogleMapsApi
 ) : SearchRepository {
 
-    override suspend fun places(query: String): Result<PlacesModel> {
+    override suspend fun places(
+        query: String,
+        nextPageToken: String?
+    ): Result<PlacesModel> {
         return try {
-            val placesDto = api.places(query)
+            val placesDto = api.places(query, nextPageToken)
             Result.success(placesDto).map { it.toPlacesModel() }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -71,6 +71,10 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.OnSelectPlace -> {
                 getPlaceDetails(event.id)
             }
+
+            is SearchEvent.OnDownloadMorePlaces -> {
+                getMorePlacesOnMap()
+            }
         }
     }
 
@@ -90,13 +94,17 @@ class SearchViewModel @Inject constructor(
                 isSearching = true
             )
             placesState = placesState.copy(places = emptyList())
-            searchUseCases.searchPlaces(searchState.queryForSearch)
+            searchUseCases.searchPlaces(
+                query = searchState.queryForSearch,
+                nextPageToken = null
+            )
                 .onSuccess { searchResult ->
                     println("qqq SearchViewModel->onSuccess->${searchResult.places}")
                     searchState = searchState.copy(
                         isSearching = false
                     )
                     placesState = placesState.copy(
+                        nextPageToken = searchResult.nextPageToken,
                         places = searchResult.places
                     )
                 }
@@ -138,6 +146,25 @@ class SearchViewModel @Inject constructor(
         searchState =
             searchState.copy(queryForSearch = searchState.placesNames.joinToString("+") + "+in+${searchState.city}")
         println("qqq SearchViewModel->updateQueryForSearch->${searchState.queryForSearch}")
+    }
+
+    private fun getMorePlacesOnMap() {
+        viewModelScope.launch {
+            searchUseCases.searchPlaces(
+                query = searchState.queryForSearch,
+                nextPageToken = placesState.nextPageToken
+            )
+                .onSuccess {searchResult ->
+
+                    println("qqq SearchViewModel->searchResult new places->${searchResult.places}")
+                    val places = placesState.places.toMutableList()
+                    places.addAll(searchResult.places)
+                    placesState = placesState.copy(places = places)
+                }
+                .onFailure {
+                    println("qqq SearchViewModel->onFailure new places->${it.message}")
+                }
+        }
     }
 
     // Get place details

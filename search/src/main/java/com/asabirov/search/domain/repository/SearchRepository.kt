@@ -6,7 +6,8 @@ import com.asabirov.search.domain.model.places.PlacesModel
 interface SearchRepository {
 
     suspend fun places(
-        query: String
+        query: String,
+        nextPageToken: String?
     ): Result<PlacesModel>
 
     suspend fun placeDetails(

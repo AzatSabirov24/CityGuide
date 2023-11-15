@@ -131,7 +131,7 @@ fun SearchScreen(
                 }
             }
             SearchTextField(
-                text = searchState.city,
+                text = "almaty",
                 onValueChange = { cityName ->
                     isHideKeyboard = false
                     viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))

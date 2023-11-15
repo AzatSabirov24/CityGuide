@@ -8,6 +8,7 @@
     <string name="place_label">Place. Type or select below</string>
     <string name="no_photo">No photo</string>
     <string name="on_map">Show on map</string>
+    <string name="download_more">Download more</string>
     <string name="work_time">Work time</string>
     <string name="geolocation_permissions_required">Geolocation permissions required</string>
 </resources>

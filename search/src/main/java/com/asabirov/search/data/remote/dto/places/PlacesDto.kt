@@ -10,5 +10,5 @@ data class PlacesDto(
     @SerializedName("html_attributions")
     val htmlAttributions: List<Any>,
     @SerializedName("next_page_token")
-    val nextPageToken: String
+    val nextPageToken: String?
 )

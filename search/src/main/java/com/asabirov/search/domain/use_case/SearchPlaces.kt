@@ -5,7 +5,13 @@ import com.asabirov.search.domain.repository.SearchRepository
 
 class SearchPlaces(private val repository: SearchRepository) {
 
-    suspend operator fun invoke(query: String): Result<PlacesModel>{
-        return repository.places(query = query)
+    suspend operator fun invoke(
+        query: String,
+        nextPageToken: String?
+    ): Result<PlacesModel> {
+        return repository.places(
+            query = query,
+            nextPageToken
+        )
     }
 }

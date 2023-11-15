@@ -9,7 +9,8 @@ interface GoogleMapsApi {
 
     @GET("api/place/textsearch/json")
     suspend fun places(
-        @Query("query") query: String
+        @Query("query") query: String,
+        @Query("pagetoken") nextPageToken: String?
     ): PlacesDto
 
     @GET("api/place/details/json")
