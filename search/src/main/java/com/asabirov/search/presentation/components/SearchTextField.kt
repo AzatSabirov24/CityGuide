@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.components
+package com.asabirov.search.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

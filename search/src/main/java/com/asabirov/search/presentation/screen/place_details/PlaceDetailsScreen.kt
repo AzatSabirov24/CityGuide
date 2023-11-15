@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.asabirov.core.utils.phone_dialer.PhoneDialer
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
-import com.asabirov.search.presentation.screen.components.DropDown
+import com.asabirov.search.presentation.components.DropDown
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @Composable

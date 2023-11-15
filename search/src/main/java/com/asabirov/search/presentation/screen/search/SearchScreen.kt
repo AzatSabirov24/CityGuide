@@ -42,7 +42,7 @@ import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
-import com.asabirov.search.presentation.screen.components.SearchTextField
+import com.asabirov.search.presentation.components.SearchTextField
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @OptIn(

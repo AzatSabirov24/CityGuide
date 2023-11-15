@@ -107,8 +107,32 @@ fun MapPlacesScreen(
                         )
                     }
                 }
-            }
+            },
+//            clusterRenderer = ClusterRenderer
         )
+//        places.forEach { place ->
+//            val markerState =
+//                rememberMarkerState(
+//                    position = LatLng(
+//                        place.location.lat,
+//                        place.location.lng
+//                    )
+//                )
+//            MarkerComposable(
+//                state = markerState,
+//                onClick = { marker ->
+//                    selectPlace = selectPlace.copy(
+//                        itemPosition = LatLng(
+//                            marker.position.latitude,
+//                            marker.position.longitude
+//                        )
+//                    )
+//                    true
+//                }
+//            ) {
+//                Marker(place.name)
+//            }
+//        }
     }
 }
 
