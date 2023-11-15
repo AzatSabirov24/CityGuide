@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.core.utils.event.UiText
+import com.asabirov.search.R
 import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
@@ -66,17 +68,18 @@ class SearchViewModel @Inject constructor(
                 updateQueryForSearch()
             }
 
-//            is SearchEvent.OnClickShowPlacesOnMap -> {
-//                openSearchResultsOnMap(event.locations)
-//            }
-
             is SearchEvent.OnSelectPlace -> {
                 getPlaceDetails(event.id)
             }
+        }
+    }
 
-//            is SearchEvent.OnClickShowPlaceDetailsOnMap -> {
-//
-//            }
+    fun showSnackBar() {
+        viewModelScope.launch {
+            _uiEvent.send(
+                UiEvent.ShowSnackbar(message = UiText.StringResource(R.string.geolocation_permissions_required))
+            )
+            println("qqq SearchViewModel->showSnackBar->")
         }
     }
 
@@ -136,14 +139,6 @@ class SearchViewModel @Inject constructor(
             searchState.copy(queryForSearch = searchState.placesNames.joinToString("+") + "+in+${searchState.city}")
         println("qqq SearchViewModel->updateQueryForSearch->${searchState.queryForSearch}")
     }
-
-//    private fun openSearchResultsOnMap(
-//        locations: List<LocationModel>
-//    ) {
-//        viewModelScope.launch {
-//            _uiEvent.send(UiEvent.OpenScreen(data = locations))
-//        }
-//    }
 
     // Get place details
 

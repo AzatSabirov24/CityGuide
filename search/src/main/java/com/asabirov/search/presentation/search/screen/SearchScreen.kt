@@ -1,5 +1,6 @@
 package com.asabirov.search.presentation.search.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -21,11 +22,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -35,13 +41,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.presentation.components.SearchTextField
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(
     ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class
@@ -65,158 +75,188 @@ fun SearchScreen(
         mutableStateOf(false)
     }
     val searchState = viewModel.searchState
-    Column(
-        modifier = Modifier.padding()
-    ) {
-        isLocationPermissionsGranted = locationService.hasLocationPermission()
-        SearchTextField(
-            text = searchState.city,
-            onValueChange = {
-                isHideKeyboard = false
-                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
-            },
-            onSearch = {
-                hideKeyboard()
-                viewModel.onEvent(SearchEvent.OnSearch)
-            },
-            iconLeftRequired = true,
-            iconLeft = {
-                IconButton(
-                    onClick = {
-                        if (isLocationPermissionsGranted) {
-                            locationService.getCurrentCity(locationService.hasLocationPermission()) {
-                                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it ?: ""))
-                            }
-                        }
-                        isHideKeyboard = false
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = stringResource(id = R.string.current_location)
-                    )
-                }
-            },
-            iconRightRequired = true,
-            iconRight = {
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
-                        isHideKeyboard = false
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = stringResource(id = R.string.close)
-                    )
-                }
-            },
-            hideKeyboard = isHideKeyboard,
-            label = stringResource(id = R.string.city_label),
-            onFocusChanged = { cityName ->
-                viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
-            },
-            modifier = Modifier.padding(horizontal = 10.dp)
-        )
-        SearchTextField(
-            text = searchState.placesNames.joinToString(" "),
-            onValueChange = {
-                isHideKeyboard = false
-                viewModel.onEvent(SearchEvent.OnAddPlaceByEditTextField(placeName = it))
-            },
-            onSearch = {
-                hideKeyboard()
-                viewModel.onEvent(SearchEvent.OnSearch)
-            },
-            iconRightRequired = true,
-            iconRight = {
-                IconButton(
-                    onClick = {
-                        viewModel.onEvent(SearchEvent.OnRemoveAllPlaces)
-                    },
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = stringResource(id = R.string.close)
-                    )
-                }
-            },
-            label = stringResource(id = R.string.place_label),
-            modifier = Modifier.padding(horizontal = 10.dp)
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(8.dp)
-        ) {
-            FlowRow {
-                SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Cafe", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Museums", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Cinemas", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Shopping malls", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Universities", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Hospitals", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Fast food", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Night Clubs", hideKeyboard = { hideKeyboard() })
-                SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
-            }
-        }
-        Spacer(modifier = Modifier.height(spacing.spaceSmall))
-        Button(
-            modifier = Modifier
-                .height(56.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp),
-            onClick = {
-                hideKeyboard()
-                viewModel.onEvent(SearchEvent.OnSearch)
-            }
-        ) {
-            when {
-                searchState.isSearching -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(32.dp),
-                        color = MaterialTheme.colorScheme.inverseOnSurface
-                    )
-                }
+    LaunchedEffect(key1 = keyboardController) {
 
-                !searchState.isSearching -> {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search),
-                        modifier = Modifier.size(36.dp)
-                    )
+    }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) {
+        Column(
+            modifier = Modifier.padding(it)
+        ) {
+            scope.launch {
+                viewModel.uiEvent.collectLatest { event ->
+                    when (event) {
+                        is UiEvent.ShowSnackbar -> {
+                            snackbarHostState.showSnackbar(
+                                message = event.message.asString(context)
+                            )
+                            keyboardController?.hide()
+                        }
+
+                        else -> {}
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(spacing.spaceSmall))
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(viewModel.placesState.places) { place ->
-                PlaceItem(
-                    modifier = Modifier.padding(4.dp),
-                    place = place,
-                    onClick = {
-                        viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
-                        openPlaceDetails()
+            isLocationPermissionsGranted = locationService.hasLocationPermission()
+            SearchTextField(
+                text = searchState.city,
+                onValueChange = {
+                    isHideKeyboard = false
+                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
+                },
+                onSearch = {
+                    hideKeyboard()
+                    viewModel.onEvent(SearchEvent.OnSearch)
+                },
+                iconLeftRequired = true,
+                iconLeft = {
+                    IconButton(
+                        onClick = {
+                            if (isLocationPermissionsGranted) {
+                                locationService.getCurrentCity(locationService.hasLocationPermission()) {
+                                    viewModel.onEvent(
+                                        SearchEvent.OnChangeCityName(
+                                            cityName = it ?: ""
+                                        )
+                                    )
+                                }
+                            } else
+                                viewModel.showSnackBar()
+                            isHideKeyboard = false
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = stringResource(id = R.string.current_location)
+                        )
                     }
-                )
+                },
+                iconRightRequired = true,
+                iconRight = {
+                    IconButton(
+                        onClick = {
+                            viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
+                            isHideKeyboard = false
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = stringResource(id = R.string.close)
+                        )
+                    }
+                },
+                hideKeyboard = isHideKeyboard,
+                label = stringResource(id = R.string.city_label),
+                onFocusChanged = { cityName ->
+                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
+                },
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
+            SearchTextField(
+                text = searchState.placesNames.joinToString(" "),
+                onValueChange = {
+                    isHideKeyboard = false
+                    viewModel.onEvent(SearchEvent.OnAddPlaceByEditTextField(placeName = it))
+                },
+                onSearch = {
+                    hideKeyboard()
+                    viewModel.onEvent(SearchEvent.OnSearch)
+                },
+                iconRightRequired = true,
+                iconRight = {
+                    IconButton(
+                        onClick = {
+                            viewModel.onEvent(SearchEvent.OnRemoveAllPlaces)
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Clear,
+                            contentDescription = stringResource(id = R.string.close)
+                        )
+                    }
+                },
+                label = stringResource(id = R.string.place_label),
+                modifier = Modifier.padding(horizontal = 10.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(8.dp)
+            ) {
+                FlowRow {
+                    SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Cafe", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Museums", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Cinemas", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Shopping malls", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Universities", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Hospitals", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Fast food", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Night Clubs", hideKeyboard = { hideKeyboard() })
+                    SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
+                }
             }
-        }
-        if (viewModel.placesState.places.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
             Button(
-                modifier = Modifier.padding(horizontal = 10.dp),
+                modifier = Modifier
+                    .height(56.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
                 onClick = {
-                    if (isLocationPermissionsGranted) {
-                        navigateToMap()
-                    }
+                    hideKeyboard()
+                    viewModel.onEvent(SearchEvent.OnSearch)
                 }
             ) {
-                Text(text = stringResource(id = R.string.on_map))
+                when {
+                    searchState.isSearching -> {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(32.dp),
+                            color = MaterialTheme.colorScheme.inverseOnSurface
+                        )
+                    }
+
+                    !searchState.isSearching -> {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(id = R.string.search),
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(spacing.spaceSmall))
+            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                items(viewModel.placesState.places) { place ->
+                    PlaceItem(
+                        modifier = Modifier.padding(4.dp),
+                        place = place,
+                        onClick = {
+                            viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
+                            openPlaceDetails()
+                        }
+                    )
+                }
+            }
+            if (viewModel.placesState.places.isNotEmpty()) {
+                Button(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    onClick = {
+                        if (isLocationPermissionsGranted) {
+                            navigateToMap()
+                        } else
+                            viewModel.showSnackBar()
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.on_map))
+                }
             }
         }
     }
+
 }
 
 @Composable
