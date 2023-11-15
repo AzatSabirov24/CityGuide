@@ -8,11 +8,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,11 +28,14 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
@@ -40,7 +45,12 @@ fun MapPlacesScreen(
     var selectPlace by remember {
         mutableStateOf(SelectedPlace())
     }
-    val places = viewModel.placesState.places
+    val places by remember {
+        mutableStateOf(viewModel.placesState.places)
+    }
+//    val placeLatLng by remember {
+//        mutableStateOf(LatLng(places.location.lat, places.location.lng))
+//    }
     val cameraPositionState = rememberCameraPositionState {
         places.forEach { place ->
             position = CameraPosition.fromLatLngZoom(
@@ -48,6 +58,10 @@ fun MapPlacesScreen(
                 11f
             )
         }
+    }
+    val scope = rememberCoroutineScope()
+    DisposableEffect(Unit) {
+        onDispose { scope.cancel() }
     }
     GoogleMap(
         modifier = Modifier.fillMaxSize(),
@@ -78,7 +92,17 @@ fun MapPlacesScreen(
         Clustering(
             items = items,
             onClusterClick = {
-                cameraPositionState.move(CameraUpdateFactory.zoomIn())
+                val builder = LatLngBounds.builder()
+                for (item in it.items) {
+                    builder.include(item.position)
+                }
+                val bounds = builder.build()
+                scope.launch {
+                    cameraPositionState.animate(
+                        CameraUpdateFactory.newLatLngBounds(bounds, 50),
+                        1000
+                    )
+                }
                 true
             },
             onClusterItemClick = {
