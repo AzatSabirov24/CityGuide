@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.search
+package com.asabirov.search.presentation.search.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

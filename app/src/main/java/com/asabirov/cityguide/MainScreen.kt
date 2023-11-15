@@ -40,10 +40,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.asabirov.cityguide.navigation.NavigationItem
-import com.asabirov.search.presentation.screen.map.MapPlaceDetailsScreen
-import com.asabirov.search.presentation.screen.map.MapPlacesScreen
-import com.asabirov.search.presentation.screen.place_details.PlaceDetailsScreen
-import com.asabirov.search.presentation.screen.search.SearchScreen
+import com.asabirov.search.presentation.map.screen.MapPlaceDetailsScreen
+import com.asabirov.search.presentation.map.screen.MapPlacesScreen
+import com.asabirov.search.presentation.place_details.screen.PlaceDetailsScreen
+import com.asabirov.search.presentation.search.screen.SearchScreen
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 

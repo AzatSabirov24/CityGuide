@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.map
+package com.asabirov.search.presentation.map.screen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.search.presentation.map.PlaceClusterItem
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition

@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.state
+package com.asabirov.search.presentation.search.state
 
 data class SearchState(
     val city: String = "",

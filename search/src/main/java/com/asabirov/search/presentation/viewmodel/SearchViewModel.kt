@@ -7,12 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
-import com.asabirov.search.domain.model.places.LocationModel
 import com.asabirov.search.domain.use_case.SearchUseCases
 import com.asabirov.search.presentation.event.SearchEvent
-import com.asabirov.search.presentation.state.PlaceDetailsState
-import com.asabirov.search.presentation.state.PlacesState
-import com.asabirov.search.presentation.state.SearchState
+import com.asabirov.search.presentation.place_details.state.PlaceDetailsState
+import com.asabirov.search.presentation.search.state.PlacesState
+import com.asabirov.search.presentation.search.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.map
+package com.asabirov.search.presentation.map.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize

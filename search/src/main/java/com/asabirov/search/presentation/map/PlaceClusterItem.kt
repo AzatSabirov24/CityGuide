@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.screen.map
+package com.asabirov.search.presentation.map
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem

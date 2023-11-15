@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.state
+package com.asabirov.search.presentation.place_details.state
 
 import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 
