@@ -1,6 +1,10 @@
 package com.asabirov.search.presentation.search.screen
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -18,16 +22,18 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,13 +54,16 @@ import com.asabirov.search.R
 import com.asabirov.search.presentation.components.SearchTextField
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(
     ExperimentalLayoutApi::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class
 )
 @Composable
 fun SearchScreen(
@@ -71,17 +80,38 @@ fun SearchScreen(
         isHideKeyboard = true
     }
     val spacing = LocalSpacing.current
-    var isLocationPermissionsGranted by remember {
-        mutableStateOf(false)
-    }
     val searchState = viewModel.searchState
-    LaunchedEffect(key1 = keyboardController) {
-
-    }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val locationPermission = rememberPermissionState(
+        permission = ACCESS_COARSE_LOCATION
+    )
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    modifier = Modifier
+                        .padding(12.dp),
+                    action = {
+                        TextButton(
+                            modifier = Modifier.padding(4.dp),
+                            onClick = {
+                                val i = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
+                                val uri = Uri.fromParts("package", context.packageName, null)
+                                i.data = uri
+                                context.startActivity(i)
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                containerColor = MaterialTheme.colorScheme.inverseOnSurface,
+                                contentColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) { Text("Go to settings") }
+                    }
+                ) {
+                    Text(data.visuals.message)
+                }
+            }
+        }
     ) {
         Column(
             modifier = Modifier.padding(it)
@@ -100,12 +130,11 @@ fun SearchScreen(
                     }
                 }
             }
-            isLocationPermissionsGranted = locationService.hasLocationPermission()
             SearchTextField(
                 text = searchState.city,
-                onValueChange = {
+                onValueChange = { cityName ->
                     isHideKeyboard = false
-                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = it))
+                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
                 },
                 onSearch = {
                     hideKeyboard()
@@ -115,11 +144,11 @@ fun SearchScreen(
                 iconLeft = {
                     IconButton(
                         onClick = {
-                            if (isLocationPermissionsGranted) {
-                                locationService.getCurrentCity(locationService.hasLocationPermission()) {
+                            if (locationPermission.status.isGranted) {
+                                locationService.getCurrentCity(locationService.hasLocationPermission()) { cityName ->
                                     viewModel.onEvent(
                                         SearchEvent.OnChangeCityName(
-                                            cityName = it ?: ""
+                                            cityName = cityName ?: ""
                                         )
                                     )
                                 }
@@ -245,7 +274,7 @@ fun SearchScreen(
                 Button(
                     modifier = Modifier.padding(horizontal = 10.dp),
                     onClick = {
-                        if (isLocationPermissionsGranted) {
+                        if (locationPermission.status.isGranted) {
                             navigateToMap()
                         } else
                             viewModel.showSnackBar()
@@ -256,7 +285,6 @@ fun SearchScreen(
             }
         }
     }
-
 }
 
 @Composable

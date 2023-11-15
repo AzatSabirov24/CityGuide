@@ -30,6 +30,7 @@ dependencies {
 
     junit()
     implementation ("com.google.maps.android:maps-compose:4.1.1")
+    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
 
 
     // Optionally, you can include the Compose utils library for Clustering,
