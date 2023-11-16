@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +47,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
@@ -86,6 +89,7 @@ fun SearchScreen(
     val locationPermission = rememberPermissionState(
         permission = ACCESS_COARSE_LOCATION
     )
+    val places = viewModel.placesPagingFlow().collectAsLazyPagingItems()
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
@@ -258,16 +262,29 @@ fun SearchScreen(
                 }
             }
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(viewModel.placesState.places) { place ->
-                    PlaceItem(
-                        modifier = Modifier.padding(4.dp),
-                        place = place,
-                        onClick = {
-                            viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
-                            openPlaceDetails()
+            if (places.loadState.refresh is LoadState.Loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else {
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    items(places) { place ->
+                        if (place != null) {
+                            PlaceItem(
+                                modifier = Modifier.padding(4.dp),
+                                place = place,
+                                onClick = {
+                                    viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
+                                    openPlaceDetails()
+                                }
+                            )
                         }
-                    )
+                    }
+                    item {
+                        if (places.loadState.append is LoadState.Loading) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
             if (viewModel.placesState.places.isNotEmpty()) {
