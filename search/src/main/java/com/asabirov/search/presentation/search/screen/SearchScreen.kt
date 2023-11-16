@@ -89,7 +89,7 @@ fun SearchScreen(
     val locationPermission = rememberPermissionState(
         permission = ACCESS_COARSE_LOCATION
     )
-    val places = viewModel.placesPagingFlow().collectAsLazyPagingItems()
+    val places = viewModel.search?.collectAsLazyPagingItems()
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
@@ -262,31 +262,34 @@ fun SearchScreen(
                 }
             }
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            if (places.loadState.refresh is LoadState.Loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            } else {
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(places) { place ->
-                        if (place != null) {
-                            PlaceItem(
-                                modifier = Modifier.padding(4.dp),
-                                place = place,
-                                onClick = {
-                                    viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
-                                    openPlaceDetails()
-                                }
-                            )
+            places?.let {
+                if (it.loadState.refresh is LoadState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        items(it) { place ->
+                            if (place != null) {
+                                PlaceItem(
+                                    modifier = Modifier.padding(4.dp),
+                                    place = place,
+                                    onClick = {
+                                        viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
+                                        openPlaceDetails()
+                                    }
+                                )
+                            }
                         }
-                    }
-                    item {
-                        if (places.loadState.append is LoadState.Loading) {
-                            CircularProgressIndicator()
+                        item {
+                            if (it.loadState.append is LoadState.Loading) {
+                                CircularProgressIndicator()
+                            }
                         }
                     }
                 }
             }
+
             if (viewModel.placesState.places.isNotEmpty()) {
                 Button(
                     modifier = Modifier.padding(horizontal = 10.dp),
