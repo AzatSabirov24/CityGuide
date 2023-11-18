@@ -123,15 +123,13 @@ fun MapPlacesScreen(
                 }
             )
         }
-        if (viewModel.placesState.nextPageToken != null) {
-            Button(
-                modifier = Modifier.padding(10.dp),
-                onClick = {
-                    viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
-                }
-            ) {
-                Text(text = stringResource(id = R.string.download_more))
+        Button(
+            modifier = Modifier.padding(10.dp),
+            onClick = {
+                viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
             }
+        ) {
+            Text(text = stringResource(id = R.string.download_more))
         }
         if (viewModel.searchState.isSearching) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

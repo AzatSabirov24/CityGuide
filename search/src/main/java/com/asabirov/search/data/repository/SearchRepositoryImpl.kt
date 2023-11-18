@@ -2,6 +2,7 @@ package com.asabirov.search.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import com.asabirov.search.data.mapper.getNextPageToken
 import com.asabirov.search.data.mapper.toPlaceDetailsModel
 import com.asabirov.search.data.mapper.toPlacesModel
 import com.asabirov.search.data.remote.GoogleMapsApi
@@ -15,20 +16,7 @@ class SearchRepositoryImpl(
     private val api: GoogleMapsApi
 ) : SearchRepository {
 
-    override suspend fun places(
-        query: String,
-        nextPageToken: String?
-    ): Result<PlacesModel> {
-        return try {
-            val placesDto = api.places(query, nextPageToken)
-            Result.success(placesDto).map { it.toPlacesModel() }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
-        }
-    }
-
-    override  fun placesPaginated(
+    override fun placesPaginated(
         query: String,
         nextPageToken: String?
     ): Pager<String, PlaceModel> {
@@ -44,6 +32,28 @@ class SearchRepositoryImpl(
                 )
             }
         )
+    }
+
+    override suspend fun places(
+        query: String,
+        nextPageToken: String?
+    ): Result<PlacesModel> {
+        return try {
+            val placesDto = api.places(query, nextPageToken)
+            Result.success(placesDto).map { it.toPlacesModel() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun nextPageToken(query: String, nextPageToken: String?): String {
+        return try {
+            val placesDto = api.places(query, nextPageToken)
+            placesDto.getNextPageToken()
+        } catch (e: Exception) {
+            e.message.toString()
+        }
     }
 
     override suspend fun placeDetails(id: String): Result<PlaceDetailsModel> {

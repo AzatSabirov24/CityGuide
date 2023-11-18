@@ -26,7 +26,7 @@ class PlacesPagingSource(
                 nextPageToken = params.key
             )
             println("qqq PlacesPagingSource->load->${response.results}")
-            delay(2000)
+            delay(500)
             val mappedResponse = response.toPlacesModel()
             LoadResult.Page(
                 data = mappedResponse.places,

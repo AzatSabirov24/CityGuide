@@ -7,15 +7,20 @@ import com.asabirov.search.domain.model.places.PlacesModel
 
 interface SearchRepository {
 
+     fun placesPaginated(
+        query: String,
+        nextPageToken: String?
+    ): Pager<String, PlaceModel>
+
     suspend fun places(
         query: String,
         nextPageToken: String?
     ): Result<PlacesModel>
 
-     fun placesPaginated(
+    suspend fun nextPageToken(
         query: String,
         nextPageToken: String?
-    ): Pager<String, PlaceModel>
+    ): String
 
     suspend fun placeDetails(
         id: String

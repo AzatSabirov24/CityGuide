@@ -38,16 +38,17 @@ class SearchViewModel @Inject constructor(
     var placeDetailsState by mutableStateOf(PlaceDetailsState(place = PlaceDetailsModel()))
         private set
 
+    var searchPagingFlow: Flow<PagingData<PlaceModel>>? = null
+
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
-    var searchPagingFlow: Flow<PagingData<PlaceModel>>? = null
 
     fun onEvent(event: SearchEvent) {
         viewModelScope.launch {
             when (event) {
                 is SearchEvent.OnSearch -> {
                     getPlacesPaginated()
+                    getNextPageToken()
                 }
 
                 is SearchEvent.OnChangeCityName -> {
@@ -116,6 +117,16 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    private fun getNextPageToken() {
+        viewModelScope.launch {
+            val nextPageToken = searchUseCases.nextPageToken.invoke(
+                searchState.queryForSearch,
+                placesState.nextPageToken
+            )
+            placesState = placesState.copy(nextPageToken = nextPageToken)
+        }
+    }
+
     private fun addPlacesToPlaceState(places: List<PlaceModel>) {
         searchState = searchState.copy(isSearching = false)
         placesState = placesState.copy(places = places)
@@ -157,14 +168,15 @@ class SearchViewModel @Inject constructor(
             isSearching = true
         )
         viewModelScope.launch {
+            println("qqq SearchViewModel->getMorePlacesOnMap nextPageToken->${placesState.nextPageToken}")
             searchUseCases.searchMorePlacesForMap(
                 query = searchState.queryForSearch,
                 nextPageToken = placesState.nextPageToken
             )
                 .onSuccess { searchResult ->
                     val places = placesState.places.toMutableList()
+                    println("qqq SearchViewModel->getMorePlacesOnMap->${places.size}")
                     places.addAll(searchResult.places)
-                    println("qqq SearchViewModel->searchResult new places->${searchResult.nextPageToken}")
                     searchState = searchState.copy(
                         isSearching = false
                     )
@@ -172,6 +184,7 @@ class SearchViewModel @Inject constructor(
                         nextPageToken = searchResult.nextPageToken,
                         places = places
                     )
+                    println("qqq SearchViewModel->searchResult new places->${placesState.places.size}")
                 }
                 .onFailure {
                     searchState = searchState.copy(

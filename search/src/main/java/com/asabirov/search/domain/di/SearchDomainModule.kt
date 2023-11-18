@@ -1,6 +1,7 @@
 package com.asabirov.search.domain.di
 
 import com.asabirov.search.domain.repository.SearchRepository
+import com.asabirov.search.domain.use_case.NextPageToken
 import com.asabirov.search.domain.use_case.PlaceDetails
 import com.asabirov.search.domain.use_case.SearchMorePlacesForMap
 import com.asabirov.search.domain.use_case.SearchPlacesPaginated
@@ -23,7 +24,8 @@ object SearchDomainModule {
         return SearchUseCases(
             searchPlacesPaginated = SearchPlacesPaginated(repository = repository),
             searchMorePlacesForMap = SearchMorePlacesForMap(repository = repository),
-            placeDetails = PlaceDetails(repository = repository)
+            placeDetails = PlaceDetails(repository = repository),
+            nextPageToken = NextPageToken(repository = repository)
         )
     }
 }

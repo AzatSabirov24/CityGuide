@@ -27,12 +27,15 @@ fun PlaceDto.toPlaceModel(): PlaceModel {
 }
 
 fun PlacesDto.toPlacesModel(): PlacesModel {
-//    val resultsWithPhoto = this.results.filter { it.photos != null }
     val results = this.results.map { it.toPlaceModel() }
     return PlacesModel(
         nextPageToken = nextPageToken,
         places = results
     )
+}
+
+fun PlacesDto.getNextPageToken(): String {
+    return nextPageToken ?: ""
 }
 
 fun LocationDto.toLocationModel(): LocationModel = LocationModel(lat = lat, lng = lng)
