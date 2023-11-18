@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -244,67 +245,58 @@ fun SearchScreen(
                     viewModel.onEvent(SearchEvent.OnSearch)
                 }
             ) {
-                when {
-                    searchState.isSearching -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(32.dp),
-                            color = MaterialTheme.colorScheme.inverseOnSurface
-                        )
-                    }
-
-                    !searchState.isSearching -> {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = stringResource(id = R.string.search),
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-                }
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(id = R.string.search),
+                    modifier = Modifier.size(36.dp)
+                )
             }
             Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            places?.let {
-                if (it.loadState.refresh is LoadState.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                } else {
-                    LazyRow(modifier = Modifier.fillMaxWidth()) {
-                        val a = it.itemSnapshotList
-//                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(place))
-                        println("qqq ->SearchScreen->${a}")
-                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(a.items))
-                        items(it) { place ->
-                            if (place != null) {
-                                PlaceItem(
-                                    modifier = Modifier.padding(4.dp),
-                                    place = place,
-                                    onClick = {
-                                        viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
-                                        openPlaceDetails()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            ) {
+                places?.let {
+                    if (it.loadState.refresh is LoadState.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    } else {
+                        Column {
+                            LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
+                                items(it) { place ->
+                                    if (place != null) {
+                                        PlaceItem(
+                                            modifier = Modifier.padding(4.dp),
+                                            place = place,
+                                            onClick = {
+                                                viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
+                                                openPlaceDetails()
+                                            }
+                                        )
                                     }
-                                )
+                                }
+                                item {
+                                    if (it.loadState.append is LoadState.Loading) {
+                                        CircularProgressIndicator(modifier = Modifier.padding(top = 100.dp))
+                                    }
+                                }
                             }
-                        }
-                        item {
-                            if (it.loadState.append is LoadState.Loading) {
-                                CircularProgressIndicator()
+                            Button(
+                                modifier = Modifier.padding(horizontal = 10.dp),
+                                onClick = {
+                                    if (locationPermission.status.isGranted) {
+                                        navigateToMap()
+                                    } else
+                                        viewModel.showSnackBar()
+                                }
+                            ) {
+                                Text(text = stringResource(id = R.string.on_map))
                             }
                         }
                     }
-                }
-            }
-
-            if (viewModel.placesState.places.isNotEmpty()) {
-                Button(
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    onClick = {
-                        if (locationPermission.status.isGranted) {
-                            navigateToMap()
-                        } else
-                            viewModel.showSnackBar()
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.on_map))
                 }
             }
         }

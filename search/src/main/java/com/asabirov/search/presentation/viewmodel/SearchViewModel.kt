@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.map
 import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.event.UiText
 import com.asabirov.search.R
@@ -21,7 +20,6 @@ import com.asabirov.search.presentation.search.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -108,18 +106,18 @@ class SearchViewModel @Inject constructor(
             searchState = searchState.copy(
                 isSearching = true
             )
+            println("qqq SearchViewModel->getPlacesPaginated->")
             searchPagingFlow = searchUseCases.searchPlacesPaginated.invoke(
                 searchState.queryForSearch,
                 placesState.nextPageToken
-            ).flow.map {
-                println("qqq SearchViewModel->getPlacesPaginated->${it.map { it.name }}")
-                it
-            }
+            )
+                .flow
                 .cachedIn(viewModelScope)
         }
     }
 
     private fun addPlacesToPlaceState(places: List<PlaceModel>) {
+        searchState = searchState.copy(isSearching = false)
         placesState = placesState.copy(places = places)
     }
 
