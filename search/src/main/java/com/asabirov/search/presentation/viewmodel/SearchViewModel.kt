@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.core.utils.event.UiText
 import com.asabirov.search.R
@@ -18,11 +19,9 @@ import com.asabirov.search.presentation.place_details.state.PlaceDetailsState
 import com.asabirov.search.presentation.search.state.PlacesState
 import com.asabirov.search.presentation.search.state.SearchState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,18 +40,10 @@ class SearchViewModel @Inject constructor(
     var placeDetailsState by mutableStateOf(PlaceDetailsState(place = PlaceDetailsModel()))
         private set
 
-    private val _searchResultPagingState =
-        MutableSharedFlow<PagingData<PlaceModel>?>(
-            replay = 1,
-            extraBufferCapacity = 100,
-            onBufferOverflow = BufferOverflow.DROP_LATEST,
-        )
-    val searchResultPagingState = _searchResultPagingState.asSharedFlow()
-
     private val _uiEvent = Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var search :  Flow<PagingData<PlaceModel>>? = null
+    var searchPagingFlow: Flow<PagingData<PlaceModel>>? = null
 
     fun onEvent(event: SearchEvent) {
         viewModelScope.launch {
@@ -93,8 +84,11 @@ class SearchViewModel @Inject constructor(
                 is SearchEvent.OnDownloadMorePlaces -> {
                     getMorePlacesOnMap()
                 }
-            }
 
+                is SearchEvent.OnAddPlaceToState -> {
+                    addPlacesToPlaceState(event.places)
+                }
+            }
         }
     }
 
@@ -107,61 +101,27 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    // Search places
+
     private fun getPlacesPaginated() {
         viewModelScope.launch {
             searchState = searchState.copy(
                 isSearching = true
             )
-//            placesState = placesState.copy(places = emptyList())
-//            placesPagingFlow().collectLatest {
-//                _searchResultPagingState.emit(it)
-//            }
-//            val placesList = placesState.places.toMutableList()
-//            placesPagingFlow().collectLatest { pagingData ->
-//                pagingData.map { placesList.add(it) }
-//            }
-            println("qqq SearchViewModel->getPlacesPaginated->$")
-            search = searchUseCases.searchPlaces.invoke(
+            searchPagingFlow = searchUseCases.searchPlacesPaginated.invoke(
                 searchState.queryForSearch,
                 placesState.nextPageToken
-            ).flow.cachedIn(viewModelScope)
+            ).flow.map {
+                println("qqq SearchViewModel->getPlacesPaginated->${it.map { it.name }}")
+                it
+            }
+                .cachedIn(viewModelScope)
         }
     }
 
-//    fun placesPagingFlow() = searchUseCases.searchPlaces.invoke(
-//        searchState.queryForSearch,
-//        placesState.nextPageToken
-//    ).flow.cachedIn(viewModelScope)
-
-    // Search places
-//    private fun executeSearch() {
-//        viewModelScope.launch {
-//            searchState = searchState.copy(
-//                isSearching = true
-//            )
-//            placesState = placesState.copy(places = emptyList())
-//            searchUseCases.searchPlaces(
-//                query = searchState.queryForSearch,
-//                nextPageToken = null
-//            )
-//                .onSuccess { searchResult ->
-//                    println("qqq SearchViewModel->onSuccess->${searchResult.places}")
-//                    searchState = searchState.copy(
-//                        isSearching = false
-//                    )
-//                    placesState = placesState.copy(
-//                        nextPageToken = searchResult.nextPageToken,
-//                        places = searchResult.places
-//                    )
-//                }
-//                .onFailure {
-//                    searchState = searchState.copy(
-//                        isSearching = false
-//                    )
-//                    println("qqq SearchViewModel->onFailure->${it.message}")
-//                }
-//        }
-//    }
+    private fun addPlacesToPlaceState(places: List<PlaceModel>) {
+        placesState = placesState.copy(places = places)
+    }
 
     private fun onChangePlace(place: String) {
         val places = searchState.placesNames.toMutableList()
@@ -199,28 +159,28 @@ class SearchViewModel @Inject constructor(
             isSearching = true
         )
         viewModelScope.launch {
-            searchUseCases.searchPlaces(
+            searchUseCases.searchMorePlacesForMap(
                 query = searchState.queryForSearch,
                 nextPageToken = placesState.nextPageToken
             )
-//                .onSuccess { searchResult ->
-//                    val places = placesState.places.toMutableList()
-//                    places.addAll(searchResult.places)
-//                    println("qqq SearchViewModel->searchResult new places->${searchResult.nextPageToken}")
-//                    searchState = searchState.copy(
-//                        isSearching = false
-//                    )
-//                    placesState = placesState.copy(
-//                        nextPageToken = searchResult.nextPageToken,
-//                        places = places
-//                    )
-//                }
-//                .onFailure {
-//                    searchState = searchState.copy(
-//                        isSearching = false
-//                    )
-//                    println("qqq SearchViewModel->onFailure new places->${it.message}")
-//                }
+                .onSuccess { searchResult ->
+                    val places = placesState.places.toMutableList()
+                    places.addAll(searchResult.places)
+                    println("qqq SearchViewModel->searchResult new places->${searchResult.nextPageToken}")
+                    searchState = searchState.copy(
+                        isSearching = false
+                    )
+                    placesState = placesState.copy(
+                        nextPageToken = searchResult.nextPageToken,
+                        places = places
+                    )
+                }
+                .onFailure {
+                    searchState = searchState.copy(
+                        isSearching = false
+                    )
+                    println("qqq SearchViewModel->onFailure new places->${it.message}")
+                }
         }
     }
 

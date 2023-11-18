@@ -89,7 +89,7 @@ fun SearchScreen(
     val locationPermission = rememberPermissionState(
         permission = ACCESS_COARSE_LOCATION
     )
-    val places = viewModel.search?.collectAsLazyPagingItems()
+    val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
     Scaffold(
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
@@ -269,6 +269,10 @@ fun SearchScreen(
                     )
                 } else {
                     LazyRow(modifier = Modifier.fillMaxWidth()) {
+                        val a = it.itemSnapshotList
+//                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(place))
+                        println("qqq ->SearchScreen->${a}")
+                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(a.items))
                         items(it) { place ->
                             if (place != null) {
                                 PlaceItem(

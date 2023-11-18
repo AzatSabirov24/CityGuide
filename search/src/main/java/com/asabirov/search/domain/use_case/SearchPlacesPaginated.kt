@@ -4,17 +4,7 @@ import androidx.paging.Pager
 import com.asabirov.search.domain.model.places.PlaceModel
 import com.asabirov.search.domain.repository.SearchRepository
 
-class SearchPlaces(private val repository: SearchRepository) {
-
-//    suspend operator fun invoke(
-//        query: String,
-//        nextPageToken: String?
-//    ): Result<PlacesModel> {
-//        return repository.places(
-//            query = query,
-//            nextPageToken
-//        )
-//    }
+class SearchPlacesPaginated(private val repository: SearchRepository) {
 
     operator fun invoke(
         query: String,

@@ -2,7 +2,8 @@ package com.asabirov.search.domain.di
 
 import com.asabirov.search.domain.repository.SearchRepository
 import com.asabirov.search.domain.use_case.PlaceDetails
-import com.asabirov.search.domain.use_case.SearchPlaces
+import com.asabirov.search.domain.use_case.SearchMorePlacesForMap
+import com.asabirov.search.domain.use_case.SearchPlacesPaginated
 import com.asabirov.search.domain.use_case.SearchUseCases
 import dagger.Module
 import dagger.Provides
@@ -20,7 +21,8 @@ object SearchDomainModule {
         repository: SearchRepository
     ): SearchUseCases {
         return SearchUseCases(
-            searchPlaces = SearchPlaces(repository = repository),
+            searchPlacesPaginated = SearchPlacesPaginated(repository = repository),
+            searchMorePlacesForMap = SearchMorePlacesForMap(repository = repository),
             placeDetails = PlaceDetails(repository = repository)
         )
     }

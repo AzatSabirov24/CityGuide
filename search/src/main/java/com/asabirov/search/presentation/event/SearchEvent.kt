@@ -1,5 +1,7 @@
 package com.asabirov.search.presentation.event
 
+import com.asabirov.search.domain.model.places.PlaceModel
+
 sealed interface SearchEvent {
 
     data object OnSearch : SearchEvent
@@ -10,4 +12,5 @@ sealed interface SearchEvent {
     data object OnRemoveAllPlaces : SearchEvent
     data object OnDownloadMorePlaces : SearchEvent
     data class OnSelectPlace(val id: String) : SearchEvent
+    data class OnAddPlaceToState(val places: List<PlaceModel>) : SearchEvent
 }
