@@ -112,7 +112,7 @@ class SearchViewModel @Inject constructor(
             searchState = searchState.copy(
                 isSearching = true
             )
-            placesState = placesState.copy(places = emptyList())
+//            placesState = placesState.copy(places = emptyList())
 //            placesPagingFlow().collectLatest {
 //                _searchResultPagingState.emit(it)
 //            }
@@ -120,6 +120,7 @@ class SearchViewModel @Inject constructor(
 //            placesPagingFlow().collectLatest { pagingData ->
 //                pagingData.map { placesList.add(it) }
 //            }
+            println("qqq SearchViewModel->getPlacesPaginated->$")
             search = searchUseCases.searchPlaces.invoke(
                 searchState.queryForSearch,
                 placesState.nextPageToken

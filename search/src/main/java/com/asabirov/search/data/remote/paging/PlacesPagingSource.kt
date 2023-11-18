@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.asabirov.search.data.mapper.toPlacesModel
 import com.asabirov.search.data.remote.GoogleMapsApi
 import com.asabirov.search.domain.model.places.PlaceModel
-import kotlinx.coroutines.delay
 
 class PlacesPagingSource(
     private val api: GoogleMapsApi,
@@ -25,9 +24,8 @@ class PlacesPagingSource(
                 query = query,
                 nextPageToken = params.key
             )
-            println("qqq PlacesPagingSource->load->${params.key}")
+            println("qqq PlacesPagingSource->load->${response.results}")
             val mappedResponse = response.toPlacesModel()
-            delay(2000)
             LoadResult.Page(
                 data = mappedResponse.places,
                 prevKey = null,
