@@ -1,5 +1,6 @@
 package com.asabirov.search.presentation.map.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,12 +23,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.asabirov.core.utils.event.UiEvent
 import com.asabirov.search.R
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.map.PlaceClusterItem
@@ -37,14 +44,19 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(MapsComposeExperimentalApi::class)
 @Composable
 fun MapPlacesScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val places = viewModel.placesState.places
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scopeUiEvent = rememberCoroutineScope()
     val cameraPositionState = rememberCameraPositionState {
         places.forEach { place ->
             position = CameraPosition.fromLatLngZoom(
@@ -53,86 +65,112 @@ fun MapPlacesScreen(
             )
         }
     }
-    Box(modifier = Modifier.fillMaxSize()) {
-        GoogleMap(
-            modifier = Modifier.fillMaxSize(),
-            cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = true)
-        ) {
-            val items = remember { mutableStateListOf<PlaceClusterItem>() }
-            val scope = rememberCoroutineScope()
-            LaunchedEffect(places.size) {
-                places.forEach {
-                    val position = LatLng(
-                        it.location.lat,
-                        it.location.lng,
-                    )
-                    items.add(PlaceClusterItem(position, it.name, "", 1f))
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    modifier = Modifier
+                        .padding(12.dp)
+                ) {
+                    Text(data.visuals.message)
                 }
             }
-            Clustering(
-                items = items,
-                onClusterClick = { cluster ->
-                    val builder = LatLngBounds.builder()
-                    for (item in cluster.items) {
-                        builder.include(item.position)
-                    }
-                    val bounds = builder.build()
-                    scope.launch {
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newLatLngBounds(bounds, 50),
-                            1000
+        }
+    ) {
+        scopeUiEvent.launch {
+            viewModel.uiEvent.collectLatest {event ->
+                when (event) {
+                    is UiEvent.ShowSnackbar -> {
+                        snackbarHostState.showSnackbar(
+                            message = event.message.asString(context)
                         )
                     }
-                    true
-                },
-                onClusterItemClick = {
-                    scope.launch {
-                        cameraPositionState.animate(
-                            CameraUpdateFactory.newLatLngZoom(
-                                LatLng(
-                                    it.itemPosition.latitude,
-                                    it.itemPosition.longitude
-                                ), 18f
-                            ),
-                            1000
+
+                    else -> {}
+                }
+            }
+        }
+        Box(modifier = Modifier.fillMaxSize().padding(it)) {
+            GoogleMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                properties = MapProperties(isMyLocationEnabled = true)
+            ) {
+                val items = remember { mutableStateListOf<PlaceClusterItem>() }
+                val scope = rememberCoroutineScope()
+                LaunchedEffect(places.size) {
+                    places.forEach {
+                        val position = LatLng(
+                            it.location.lat,
+                            it.location.lng,
                         )
+                        items.add(PlaceClusterItem(position, it.name, "", 1f))
                     }
-                    true
-                },
-                clusterContent = { cluster ->
-                    Surface(
-                        Modifier.size(40.dp),
-                        shape = CircleShape,
-                        color = Color.Blue,
-                        contentColor = Color.White,
-                        border = BorderStroke(1.dp, Color.Green)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                "%,d".format(cluster.size),
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Black,
-                                textAlign = TextAlign.Center
+                }
+                Clustering(
+                    items = items,
+                    onClusterClick = { cluster ->
+                        val builder = LatLngBounds.builder()
+                        for (item in cluster.items) {
+                            builder.include(item.position)
+                        }
+                        val bounds = builder.build()
+                        scope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLngBounds(bounds, 50),
+                                1000
                             )
                         }
+                        true
+                    },
+                    onClusterItemClick = {
+                        scope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLngZoom(
+                                    LatLng(
+                                        it.itemPosition.latitude,
+                                        it.itemPosition.longitude
+                                    ), 18f
+                                ),
+                                1000
+                            )
+                        }
+                        true
+                    },
+                    clusterContent = { cluster ->
+                        Surface(
+                            Modifier.size(40.dp),
+                            shape = CircleShape,
+                            color = Color.Blue,
+                            contentColor = Color.White,
+                            border = BorderStroke(1.dp, Color.Green)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    "%,d".format(cluster.size),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Black,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    },
+                    clusterItemContent = {
+                        Marker(it.itemTitle)
                     }
-                },
-                clusterItemContent = {
-                    Marker(it.itemTitle)
-                }
-            )
-        }
-        Button(
-            modifier = Modifier.padding(10.dp),
-            onClick = {
-                viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
+                )
             }
-        ) {
-            Text(text = stringResource(id = R.string.download_more))
-        }
-        if (viewModel.searchState.isSearching) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Button(
+                modifier = Modifier.padding(10.dp),
+                onClick = {
+                    viewModel.onEvent(SearchEvent.OnDownloadMorePlaces)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.download_more))
+            }
+            if (viewModel.searchState.isSearching) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
         }
     }
 }

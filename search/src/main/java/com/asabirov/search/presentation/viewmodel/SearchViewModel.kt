@@ -185,6 +185,11 @@ class SearchViewModel @Inject constructor(
                         places = places
                     )
                     println("qqq SearchViewModel->searchResult new places->${placesState.places.size}")
+                    if (searchResult.nextPageToken == null) {
+                        _uiEvent.send(
+                            UiEvent.ShowSnackbar(message = UiText.StringResource(R.string.no_more_results_available))
+                        )
+                    }
                 }
                 .onFailure {
                     searchState = searchState.copy(

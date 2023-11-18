@@ -110,7 +110,7 @@ fun SearchScreen(
                                 containerColor = MaterialTheme.colorScheme.inverseOnSurface,
                                 contentColor = MaterialTheme.colorScheme.primary
                             )
-                        ) { Text("Go to settings") }
+                        ) { Text(stringResource(id = R.string.go_to_settings)) }
                     }
                 ) {
                     Text(data.visuals.message)
@@ -136,7 +136,7 @@ fun SearchScreen(
                 }
             }
             SearchTextField(
-                text = "almaty",
+                text = searchState.city,
                 onValueChange = { cityName ->
                     isHideKeyboard = false
                     viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
