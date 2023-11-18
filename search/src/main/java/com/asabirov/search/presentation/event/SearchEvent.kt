@@ -13,4 +13,5 @@ sealed interface SearchEvent {
     data object OnDownloadMorePlaces : SearchEvent
     data class OnSelectPlace(val id: String) : SearchEvent
     data class OnAddPlaceToState(val places: List<PlaceModel>) : SearchEvent
+    data class OnSelectPlaceOnMap(val placeModel: PlaceModel) : SearchEvent
 }

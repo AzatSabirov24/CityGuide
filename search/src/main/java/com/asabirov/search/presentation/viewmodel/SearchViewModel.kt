@@ -87,6 +87,10 @@ class SearchViewModel @Inject constructor(
                 is SearchEvent.OnAddPlaceToState -> {
                     addPlacesToPlaceState(event.places)
                 }
+
+                is SearchEvent.OnSelectPlaceOnMap -> {
+                    selectPlaceOnMap(event.placeModel)
+                }
             }
         }
     }
@@ -224,5 +228,11 @@ class SearchViewModel @Inject constructor(
                     println("qqq getPlaceDetails->onFailure->${it.message}")
                 }
         }
+    }
+
+    private fun selectPlaceOnMap(placeModel: PlaceModel) {
+        placesState = placesState.copy(
+            selectedPlaceModel = placeModel
+        )
     }
 }

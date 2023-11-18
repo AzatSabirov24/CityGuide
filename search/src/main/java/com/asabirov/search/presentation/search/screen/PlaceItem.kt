@@ -95,7 +95,6 @@ fun PlaceItem(
                 )
             )
         }
-//        place.
         place.rating?.let {
             Text(
                 text = it.toString(),

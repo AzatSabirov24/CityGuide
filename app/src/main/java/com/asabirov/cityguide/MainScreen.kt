@@ -162,7 +162,12 @@ fun MainScreen() {
                                 navController.getBackStackEntry("Search")
                             }
                             val searchViewModel = hiltViewModel<SearchViewModel>(searchEntry)
-                            MapPlacesScreen(viewModel = searchViewModel)
+                            MapPlacesScreen(
+                                viewModel = searchViewModel,
+                                openPlaceDetails = {
+                                    navController.navigate("PlaceDetails")
+                                }
+                            )
                         }
                         composable("MapPlaceDetails") {
                             val searchEntry = remember {
@@ -180,7 +185,8 @@ fun MainScreen() {
                                 navigateToMap = {
                                     navController.navigate("MapPlaceDetails")
                                 },
-                                viewModel = searchViewModel)
+                                viewModel = searchViewModel
+                            )
                         }
                     }
                 }
