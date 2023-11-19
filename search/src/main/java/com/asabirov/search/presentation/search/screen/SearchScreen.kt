@@ -5,6 +5,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -65,7 +68,8 @@ import kotlinx.coroutines.flow.collectLatest
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(
     ExperimentalLayoutApi::class,
-    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class
+    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class,
+    ExperimentalFoundationApi::class
 )
 @Composable
 fun SearchScreen(
@@ -88,6 +92,7 @@ fun SearchScreen(
         permission = ACCESS_COARSE_LOCATION
     )
     val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
+    val lazyListState = rememberLazyListState()
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -268,7 +273,11 @@ fun SearchScreen(
                     places?.let {
                         if (it.itemCount != 0) {
                             Column {
-                                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                LazyRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    state = lazyListState,
+                                    flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
+                                ) {
                                     viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
                                     items(it) { place ->
                                         if (place != null) {

@@ -4,8 +4,10 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -33,9 +36,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.core.utils.phone_dialer.PhoneDialer
 import com.asabirov.core_ui.LocalSpacing
+import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.search.R
 import com.asabirov.search.presentation.components.DropDown
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
@@ -44,7 +47,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun PlaceDetailsScreen(
     navigateToMap: () -> Unit,
@@ -58,6 +61,7 @@ fun PlaceDetailsScreen(
     val locationPermission = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
     )
+    val lazyListState = rememberLazyListState()
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -66,6 +70,7 @@ fun PlaceDetailsScreen(
                         message = event.message.asString(context)
                     )
                 }
+
                 else -> Unit
             }
         }
@@ -101,10 +106,7 @@ fun PlaceDetailsScreen(
             modifier = Modifier
                 .padding(it)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+            Column {
                 Text(
                     text = state.place.name ?: "",
                     fontSize = 24.sp,
@@ -113,8 +115,9 @@ fun PlaceDetailsScreen(
                 )
                 LazyRow(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = spacing.spaceSmall)
+                        .padding(vertical = spacing.spaceSmall),
+                    state = lazyListState,
+                    flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
                 ) {
                     state.place.photos?.let { photos ->
                         items(photos) { photoModel ->
@@ -123,10 +126,7 @@ fun PlaceDetailsScreen(
                     }
                 }
             }
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+            LazyColumn {
                 item {
                     Text(
                         text = state.place.address ?: "",
@@ -144,7 +144,7 @@ fun PlaceDetailsScreen(
                             modifier = Modifier
                                 .padding(
                                     top = spacing.spaceSmall,
-                                    start = spacing.spaceSmall
+                                    start = spacing.spaceMedium
                                 )
                                 .clickable {
                                     phoneDialer(state.place.phoneNumber ?: "")
