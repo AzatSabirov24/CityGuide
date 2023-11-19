@@ -51,7 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R

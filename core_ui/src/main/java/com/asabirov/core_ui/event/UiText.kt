@@ -1,4 +1,4 @@
-package com.asabirov.core.utils.event
+package com.asabirov.core_ui.event
 
 import android.content.Context
 

@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
 import com.asabirov.search.domain.model.places.PlaceModel

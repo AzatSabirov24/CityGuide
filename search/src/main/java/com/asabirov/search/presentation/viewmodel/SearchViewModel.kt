@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.asabirov.core.utils.event.UiEvent
-import com.asabirov.core.utils.event.UiText
+import com.asabirov.core_ui.event.UiEvent
+import com.asabirov.core_ui.event.UiText
 import com.asabirov.search.R
 import com.asabirov.search.domain.model.place_details.PlaceDetailsModel
 import com.asabirov.search.domain.model.places.PlaceModel

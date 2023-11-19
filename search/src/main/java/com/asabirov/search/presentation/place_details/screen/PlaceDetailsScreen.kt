@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.asabirov.core.utils.event.UiEvent
+import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.core.utils.phone_dialer.PhoneDialer
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.search.R
