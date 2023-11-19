@@ -51,9 +51,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
-import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
+import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.search.R
 import com.asabirov.search.presentation.components.SearchTextField
 import com.asabirov.search.presentation.event.SearchEvent
@@ -230,67 +230,75 @@ fun SearchScreen(
                     SetPlace(placeName = "Night Clubs", hideKeyboard = { hideKeyboard() })
                     SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
                 }
-            }
-            Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            Button(
-                modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp),
-                onClick = {
-                    hideKeyboard()
-                    viewModel.onEvent(SearchEvent.OnSearch)
+                Spacer(modifier = Modifier.height(spacing.spaceSmall))
+                Button(
+                    modifier = Modifier
+                        .height(56.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp),
+                    onClick = {
+                        hideKeyboard()
+                        viewModel.onEvent(SearchEvent.OnSearch)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(id = R.string.search),
+                        modifier = Modifier.size(36.dp)
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = stringResource(id = R.string.search),
-                    modifier = Modifier.size(36.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(spacing.spaceSmall))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(300.dp)
-            ) {
-                places?.let {
-                    if (it.loadState.refresh is LoadState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    } else {
-                        Column {
-                            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                                viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
-                                items(it) { place ->
-                                    if (place != null) {
-                                        PlaceItem(
-                                            modifier = Modifier.padding(4.dp),
-                                            place = place,
-                                            onClick = {
-                                                viewModel.onEvent(SearchEvent.OnSelectPlace(place.id))
-                                                openPlaceDetails()
-                                            }
-                                        )
+                Spacer(modifier = Modifier.height(spacing.spaceSmall))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(300.dp)
+                ) {
+                    places?.let {
+                        if (it.loadState.refresh is LoadState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        } else {
+                            Column {
+                                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                                    viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
+                                    items(it) { place ->
+                                        if (place != null) {
+                                            PlaceItem(
+                                                modifier = Modifier.padding(4.dp),
+                                                place = place,
+                                                onClick = {
+                                                    viewModel.onEvent(
+                                                        SearchEvent.OnSelectPlace(
+                                                            place.id
+                                                        )
+                                                    )
+                                                    openPlaceDetails()
+                                                }
+                                            )
+                                        }
+                                    }
+                                    item {
+                                        if (it.loadState.append is LoadState.Loading) {
+                                            CircularProgressIndicator(
+                                                modifier = Modifier.padding(
+                                                    top = 100.dp
+                                                )
+                                            )
+                                        }
                                     }
                                 }
-                                item {
-                                    if (it.loadState.append is LoadState.Loading) {
-                                        CircularProgressIndicator(modifier = Modifier.padding(top = 100.dp))
+                                Button(
+                                    modifier = Modifier.padding(horizontal = 10.dp),
+                                    onClick = {
+                                        if (locationPermission.status.isGranted) {
+                                            navigateToMap()
+                                        } else
+                                            viewModel.showSnackBar()
                                     }
+                                ) {
+                                    Text(text = stringResource(id = R.string.on_map))
                                 }
-                            }
-                            Button(
-                                modifier = Modifier.padding(horizontal = 10.dp),
-                                onClick = {
-                                    if (locationPermission.status.isGranted) {
-                                        navigateToMap()
-                                    } else
-                                        viewModel.showSnackBar()
-                                }
-                            ) {
-                                Text(text = stringResource(id = R.string.on_map))
                             }
                         }
                     }
