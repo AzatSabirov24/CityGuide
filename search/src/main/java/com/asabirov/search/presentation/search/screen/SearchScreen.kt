@@ -39,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -241,7 +240,20 @@ fun SearchScreen(
                         viewModel.onEvent(SearchEvent.OnSearch)
                     }
                 ) {
-                    Icon(
+                    places?.let {
+                        if (it.loadState.refresh is LoadState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(32.dp),
+                                color = MaterialTheme.colorScheme.inverseOnSurface
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = stringResource(id = R.string.search),
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                    } ?: Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = stringResource(id = R.string.search),
                         modifier = Modifier.size(36.dp)
@@ -254,11 +266,7 @@ fun SearchScreen(
                         .height(300.dp)
                 ) {
                     places?.let {
-                        if (it.loadState.refresh is LoadState.Loading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        } else {
+                        if (it.itemCount != 0) {
                             Column {
                                 LazyRow(modifier = Modifier.fillMaxWidth()) {
                                     viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
