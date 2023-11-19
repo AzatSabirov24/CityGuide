@@ -215,9 +215,9 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(8.dp)
+                    .padding(it)
             ) {
-                FlowRow {
+                FlowRow(modifier = Modifier.padding(8.dp)) {
                     SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
                     SetPlace(placeName = "Cafe", hideKeyboard = { hideKeyboard() })
                     SetPlace(placeName = "Museums", hideKeyboard = { hideKeyboard() })
