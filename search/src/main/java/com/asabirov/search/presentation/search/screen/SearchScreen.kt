@@ -41,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -64,6 +65,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(
@@ -93,6 +95,7 @@ fun SearchScreen(
     )
     val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -243,6 +246,9 @@ fun SearchScreen(
                     onClick = {
                         hideKeyboard()
                         viewModel.onEvent(SearchEvent.OnSearch)
+                        scope.launch {
+                            lazyListState.scrollToItem(0)
+                        }
                     }
                 ) {
                     places?.let {
