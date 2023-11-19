@@ -66,7 +66,7 @@ fun MapPlacesScreen(
     openPlaceDetails: () -> Unit
 ) {
     val context = LocalContext.current
-    val places = viewModel.placesState.places
+    val places = viewModel.placesState.places.distinctBy { it.id }
     val snackbarHostState = remember { SnackbarHostState() }
     val scopeUiEvent = rememberCoroutineScope()
     val cameraPositionState = rememberCameraPositionState {

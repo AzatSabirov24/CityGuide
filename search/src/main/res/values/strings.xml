@@ -12,5 +12,5 @@
     <string name="work_time">Work time</string>
     <string name="geolocation_permissions_required">Geolocation permissions required</string>
     <string name="go_to_settings">Go to settings</string>
-    <string name="no_more_results_available">No more results available</string>
+    <string name="no_more_places_available">No more places available</string>
 </resources>
