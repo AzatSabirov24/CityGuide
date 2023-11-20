@@ -1,9 +1,6 @@
 package com.asabirov.search.presentation.search.screen
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.content.Intent
-import android.net.Uri
-import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,14 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,25 +21,24 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.core_ui.event.UiEvent
-import com.asabirov.search.R
 import com.asabirov.search.presentation.search.screen.components.CitySearchTextField
 import com.asabirov.search.presentation.search.screen.components.PlaceTypesFlowRow
 import com.asabirov.search.presentation.search.screen.components.PlacesSearchPagingResult
 import com.asabirov.search.presentation.search.screen.components.PlacesSearchTextField
 import com.asabirov.search.presentation.search.screen.components.SearchButton
+import com.asabirov.search.presentation.search.screen.components.SearchScreenScaffold
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(
-    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class
+    ExperimentalComposeUiApi::class,
+    ExperimentalPermissionsApi::class
 )
 @Composable
 fun SearchScreen(
@@ -86,35 +75,9 @@ fun SearchScreen(
             }
         }
     }
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(snackbarHostState) { data ->
-                Snackbar(
-                    modifier = Modifier
-                        .padding(12.dp),
-                    action = {
-                        TextButton(
-                            modifier = Modifier.padding(4.dp),
-                            onClick = {
-                                val i = Intent(ACTION_APPLICATION_DETAILS_SETTINGS)
-                                val uri = Uri.fromParts("package", context.packageName, null)
-                                i.data = uri
-                                context.startActivity(i)
-                            },
-                            colors = ButtonDefaults.textButtonColors(
-                                containerColor = MaterialTheme.colorScheme.inverseOnSurface,
-                                contentColor = MaterialTheme.colorScheme.primary
-                            )
-                        ) { Text(stringResource(id = R.string.go_to_settings)) }
-                    }
-                ) {
-                    Text(data.visuals.message)
-                }
-            }
-        }
-    ) {
+    SearchScreenScaffold { padding ->
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(padding)
         ) {
             CitySearchTextField(viewModel = viewModel)
             PlacesSearchTextField(viewModel = viewModel)
@@ -122,7 +85,7 @@ fun SearchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
-                    .padding(it)
+                    .padding(padding)
             ) {
                 PlaceTypesFlowRow(keyboardAction = { hideKeyboard() })
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
