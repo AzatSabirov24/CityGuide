@@ -16,19 +16,19 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PlaceTypesFlowRow(
-    hideKeyboardAction: () -> Unit
+    keyboardAction: () -> Unit
 ) {
     FlowRow(modifier = Modifier.padding(8.dp)) {
-        SetPlacesTypes(placeName = "Restaurants", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Cafe", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Museums", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Cinemas", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Shopping malls", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Universities", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Hospitals", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Fast food", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Night Clubs", hideKeyboardAction = hideKeyboardAction)
-        SetPlacesTypes(placeName = "Hookah places", hideKeyboardAction = hideKeyboardAction)
+        SetPlacesTypes(placeName = "Restaurants", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Cafe", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Museums", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Cinemas", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Shopping malls", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Universities", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Hospitals", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Fast food", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Night Clubs", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Hookah places", hideKeyboardAction = keyboardAction)
     }
 }
 

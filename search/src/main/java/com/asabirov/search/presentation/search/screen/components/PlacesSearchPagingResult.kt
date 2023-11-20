@@ -30,7 +30,7 @@ import com.google.accompanist.permissions.isGranted
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
 @Composable
-fun PlacesSearchResult(
+fun PlacesSearchPagingResult(
     places: LazyPagingItems<PlaceModel>?,
     lazyListState: LazyListState,
     viewModel: SearchViewModel = hiltViewModel(),
@@ -43,16 +43,16 @@ fun PlacesSearchResult(
             .fillMaxWidth()
             .height(300.dp)
     ) {
-        places?.let {
-            if (it.itemCount != 0) {
+        places?.let { pagingItems ->
+            if (pagingItems.itemCount != 0) {
                 Column {
                     LazyRow(
                         modifier = Modifier.fillMaxWidth(),
                         state = lazyListState,
                         flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
                     ) {
-                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
-                        items(it) { place ->
+                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(pagingItems.itemSnapshotList.items))
+                        items(pagingItems) { place ->
                             if (place != null) {
                                 PlaceItem(
                                     modifier = Modifier.padding(4.dp),
@@ -69,7 +69,7 @@ fun PlacesSearchResult(
                             }
                         }
                         item {
-                            if (it.loadState.append is LoadState.Loading) {
+                            if (pagingItems.loadState.append is LoadState.Loading) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.padding(top = 100.dp)
                                 )

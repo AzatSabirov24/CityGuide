@@ -9,19 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -43,22 +34,19 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.search.R
-import com.asabirov.search.presentation.components.SearchTextField
-import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.search.screen.components.CitySearchTextField
 import com.asabirov.search.presentation.search.screen.components.PlaceTypesFlowRow
-import com.asabirov.search.presentation.search.screen.components.PlacesSearchResult
+import com.asabirov.search.presentation.search.screen.components.PlacesSearchPagingResult
+import com.asabirov.search.presentation.search.screen.components.PlacesSearchTextField
+import com.asabirov.search.presentation.search.screen.components.SearchButton
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class
@@ -70,7 +58,6 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val locationService = LocationService(context)
     val keyboardController = LocalSoftwareKeyboardController.current
     var isHideKeyboard by remember { mutableStateOf(false) }
     val hideKeyboard = {
@@ -78,7 +65,6 @@ fun SearchScreen(
         isHideKeyboard = true
     }
     val spacing = LocalSpacing.current
-    val searchState = viewModel.searchState
     val snackbarHostState = remember { SnackbarHostState() }
     val locationPermission = rememberPermissionState(
         permission = ACCESS_COARSE_LOCATION
@@ -86,6 +72,7 @@ fun SearchScreen(
     val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    viewModel.searchState
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -129,133 +116,29 @@ fun SearchScreen(
         Column(
             modifier = Modifier.padding(it)
         ) {
-            SearchTextField(
-                text = searchState.city,
-                onValueChange = { cityName ->
-                    isHideKeyboard = false
-                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
-                },
-                onSearch = {
-                    hideKeyboard()
-                    viewModel.onEvent(SearchEvent.OnSearch)
-                },
-                iconLeftRequired = true,
-                iconLeft = {
-                    IconButton(
-                        onClick = {
-                            if (locationPermission.status.isGranted) {
-                                locationService.getCurrentCity(locationService.hasLocationPermission()) { cityName ->
-                                    viewModel.onEvent(
-                                        SearchEvent.OnChangeCityName(
-                                            cityName = cityName ?: ""
-                                        )
-                                    )
-                                }
-                            } else
-                                viewModel.showSnackBar()
-                            isHideKeyboard = false
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.LocationOn,
-                            contentDescription = stringResource(id = R.string.current_location)
-                        )
-                    }
-                },
-                iconRightRequired = true,
-                iconRight = {
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
-                            isHideKeyboard = false
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.close)
-                        )
-                    }
-                },
-                hideKeyboard = isHideKeyboard,
-                label = stringResource(id = R.string.city_label),
-                onFocusChanged = { cityName ->
-                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
-                },
-                modifier = Modifier.padding(horizontal = 10.dp)
-            )
-            SearchTextField(
-                text = searchState.placesNames.joinToString(" "),
-                onValueChange = {
-                    isHideKeyboard = false
-                    viewModel.onEvent(SearchEvent.OnAddPlaceByEditTextField(placeName = it))
-                },
-                onSearch = {
-                    hideKeyboard()
-                    viewModel.onEvent(SearchEvent.OnSearch)
-                },
-                iconRightRequired = true,
-                iconRight = {
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(SearchEvent.OnRemoveAllPlaces)
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = stringResource(id = R.string.close)
-                        )
-                    }
-                },
-                label = stringResource(id = R.string.place_label),
-                modifier = Modifier.padding(horizontal = 10.dp)
-            )
+            CitySearchTextField(viewModel = viewModel)
+            PlacesSearchTextField(viewModel = viewModel)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(it)
             ) {
-                PlaceTypesFlowRow { hideKeyboard() }
+                PlaceTypesFlowRow(keyboardAction = { hideKeyboard() })
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
-                Button(
-                    modifier = Modifier
-                        .height(56.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp),
-                    onClick = {
-                        hideKeyboard()
-                        viewModel.onEvent(SearchEvent.OnSearch)
-                        scope.launch {
-                            lazyListState.scrollToItem(0)
-                        }
-                    }
-                ) {
-                    places?.let {
-                        if (it.loadState.refresh is LoadState.Loading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(32.dp),
-                                color = MaterialTheme.colorScheme.inverseOnSurface
-                            )
-                        } else {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = stringResource(id = R.string.search),
-                                modifier = Modifier.size(36.dp)
-                            )
-                        }
-                    } ?: Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = stringResource(id = R.string.search),
-                        modifier = Modifier.size(36.dp)
-                    )
-                }
+                SearchButton(
+                    places = places,
+                    hideKeyboardAction = { hideKeyboard() },
+                    scope = scope,
+                    lazyListState = lazyListState
+                )
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
-                PlacesSearchResult(
+                PlacesSearchPagingResult(
                     places = places,
                     lazyListState = lazyListState,
                     viewModel = viewModel,
                     openPlaceDetails = { openPlaceDetails() },
-                    navigateToMap = { navigateToMap()},
+                    navigateToMap = { navigateToMap() },
                     locationPermission = locationPermission
                 )
             }
