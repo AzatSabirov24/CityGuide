@@ -1,4 +1,4 @@
-package com.asabirov.search.presentation.search.screen.components
+package com.asabirov.search.presentation.components
 
 import android.content.Intent
 import android.net.Uri
@@ -17,12 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.asabirov.search.R
 
 @Composable
-fun SearchScreenScaffold(content: @Composable (contentPadding: PaddingValues) -> Unit) {
+fun SearchScaffold(
+    actionName: String,
+    content: @Composable (
+        contentPadding: PaddingValues
+    ) -> Unit
+) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -44,7 +47,7 @@ fun SearchScreenScaffold(content: @Composable (contentPadding: PaddingValues) ->
                                 containerColor = MaterialTheme.colorScheme.inverseOnSurface,
                                 contentColor = MaterialTheme.colorScheme.primary
                             )
-                        ) { Text(stringResource(id = R.string.go_to_settings)) }
+                        ) { Text(text = actionName) }
                     }
                 ) {
                     Text(data.visuals.message)

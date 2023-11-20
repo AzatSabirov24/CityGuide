@@ -21,16 +21,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.core_ui.event.UiEvent
+import com.asabirov.search.R
+import com.asabirov.search.presentation.components.SearchScaffold
 import com.asabirov.search.presentation.search.screen.components.CitySearchTextField
 import com.asabirov.search.presentation.search.screen.components.PlaceTypesFlowRow
 import com.asabirov.search.presentation.search.screen.components.PlacesSearchPagingResult
 import com.asabirov.search.presentation.search.screen.components.PlacesSearchTextField
 import com.asabirov.search.presentation.search.screen.components.SearchButton
-import com.asabirov.search.presentation.search.screen.components.SearchScreenScaffold
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -75,7 +77,11 @@ fun SearchScreen(
             }
         }
     }
-    SearchScreenScaffold { padding ->
+    SearchScaffold(
+        actionName = stringResource(
+            id = R.string.go_to_settings
+        )
+    ) { padding ->
         Column(
             modifier = Modifier.padding(padding)
         ) {
