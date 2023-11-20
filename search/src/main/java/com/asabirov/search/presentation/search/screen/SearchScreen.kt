@@ -1,22 +1,15 @@
 package com.asabirov.search.presentation.search.screen
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -45,7 +38,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -53,13 +45,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import com.asabirov.core.utils.location.LocationService
 import com.asabirov.core_ui.LocalSpacing
 import com.asabirov.core_ui.event.UiEvent
 import com.asabirov.search.R
 import com.asabirov.search.presentation.components.SearchTextField
 import com.asabirov.search.presentation.event.SearchEvent
+import com.asabirov.search.presentation.search.screen.components.PlaceTypesFlowRow
+import com.asabirov.search.presentation.search.screen.components.PlacesSearchResult
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -67,11 +60,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(
-    ExperimentalLayoutApi::class,
-    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class
 )
 @Composable
 fun SearchScreen(
@@ -225,18 +215,7 @@ fun SearchScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(it)
             ) {
-                FlowRow(modifier = Modifier.padding(8.dp)) {
-                    SetPlace(placeName = "Restaurants", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Cafe", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Museums", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Cinemas", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Shopping malls", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Universities", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Hospitals", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Fast food", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Night Clubs", hideKeyboard = { hideKeyboard() })
-                    SetPlace(placeName = "Hookah places", hideKeyboard = { hideKeyboard() })
-                }
+                PlaceTypesFlowRow { hideKeyboard() }
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
                 Button(
                     modifier = Modifier
@@ -271,81 +250,15 @@ fun SearchScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
-                ) {
-                    places?.let {
-                        if (it.itemCount != 0) {
-                            Column {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    state = lazyListState,
-                                    flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
-                                ) {
-                                    viewModel.onEvent(SearchEvent.OnAddPlaceToState(it.itemSnapshotList.items))
-                                    items(it) { place ->
-                                        if (place != null) {
-                                            PlaceItem(
-                                                modifier = Modifier.padding(4.dp),
-                                                place = place,
-                                                onClick = {
-                                                    viewModel.onEvent(
-                                                        SearchEvent.OnSelectPlace(
-                                                            place.id
-                                                        )
-                                                    )
-                                                    openPlaceDetails()
-                                                }
-                                            )
-                                        }
-                                    }
-                                    item {
-                                        if (it.loadState.append is LoadState.Loading) {
-                                            CircularProgressIndicator(
-                                                modifier = Modifier.padding(
-                                                    top = 100.dp
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                                Button(
-                                    modifier = Modifier.padding(horizontal = 10.dp),
-                                    onClick = {
-                                        if (locationPermission.status.isGranted) {
-                                            navigateToMap()
-                                        } else
-                                            viewModel.showSnackBar()
-                                    }
-                                ) {
-                                    Text(text = stringResource(id = R.string.on_map))
-                                }
-                            }
-                        }
-                    }
-                }
+                PlacesSearchResult(
+                    places = places,
+                    lazyListState = lazyListState,
+                    viewModel = viewModel,
+                    openPlaceDetails = { openPlaceDetails() },
+                    navigateToMap = { navigateToMap()},
+                    locationPermission = locationPermission
+                )
             }
         }
     }
-}
-
-@Composable
-private fun SetPlace(
-    placeName: String,
-    viewModel: SearchViewModel = hiltViewModel(),
-    hideKeyboard: () -> Unit
-) {
-    PlaceSelectableButton(
-        text = placeName,
-        color = MaterialTheme.colorScheme.primary,
-        selectedTextColor = Color.White,
-        onClick = { isSelected ->
-            hideKeyboard()
-            if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
-            else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
-        },
-        viewModel = viewModel
-    )
 }

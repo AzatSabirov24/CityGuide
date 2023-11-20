@@ -44,7 +44,7 @@ import com.asabirov.search.R
 import com.asabirov.search.domain.model.places.PlaceModel
 import com.asabirov.search.presentation.event.SearchEvent
 import com.asabirov.search.presentation.map.PlaceClusterItem
-import com.asabirov.search.presentation.search.screen.PlaceItem
+import com.asabirov.search.presentation.search.screen.components.PlaceItem
 import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
