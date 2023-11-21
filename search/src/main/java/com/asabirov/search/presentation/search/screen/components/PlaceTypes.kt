@@ -15,35 +15,31 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PlaceTypesFlowRow(
-    keyboardAction: () -> Unit
-) {
+fun PlaceTypesFlowRow() {
     FlowRow(modifier = Modifier.padding(8.dp)) {
-        SetPlacesTypes(placeName = "Restaurants", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Cafe", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Museums", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Cinemas", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Shopping malls", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Universities", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Hospitals", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Fast food", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Night Clubs", hideKeyboardAction = keyboardAction)
-        SetPlacesTypes(placeName = "Hookah places", hideKeyboardAction = keyboardAction)
+        SetPlacesTypes(placeName = "Restaurants")
+        SetPlacesTypes(placeName = "Cafe")
+        SetPlacesTypes(placeName = "Museums")
+        SetPlacesTypes(placeName = "Cinemas")
+        SetPlacesTypes(placeName = "Shopping malls")
+        SetPlacesTypes(placeName = "Universities")
+        SetPlacesTypes(placeName = "Hospitals")
+        SetPlacesTypes(placeName = "Fast food")
+        SetPlacesTypes(placeName = "Night Clubs")
+        SetPlacesTypes(placeName = "Hookah places")
     }
 }
 
 @Composable
 private fun SetPlacesTypes(
     placeName: String,
-    viewModel: SearchViewModel = hiltViewModel(),
-    hideKeyboardAction: () -> Unit
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
     PlaceSelectableButton(
         text = placeName,
         color = MaterialTheme.colorScheme.primary,
         selectedTextColor = Color.White,
         onClick = { isSelected ->
-            hideKeyboardAction()
             if (isSelected) viewModel.onEvent(SearchEvent.OnAddPlaceByClickTag(placeName = placeName))
             else viewModel.onEvent(SearchEvent.OnRemovePlace(placeName = placeName))
         },

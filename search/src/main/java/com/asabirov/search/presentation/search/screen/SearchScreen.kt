@@ -12,11 +12,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,8 +36,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(
-    ExperimentalComposeUiApi::class,
-    ExperimentalPermissionsApi::class
+    ExperimentalPermissionsApi::class,
+    ExperimentalComposeUiApi::class
 )
 @Composable
 fun SearchScreen(
@@ -49,12 +46,6 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var isHideKeyboard by remember { mutableStateOf(false) }
-    val hideKeyboard = {
-        keyboardController?.hide()
-        isHideKeyboard = true
-    }
     val spacing = LocalSpacing.current
     val snackbarHostState = remember { SnackbarHostState() }
     val locationPermission = rememberPermissionState(
@@ -63,6 +54,7 @@ fun SearchScreen(
     val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
     viewModel.searchState
     LaunchedEffect(Unit) {
         viewModel.uiEvent.collectLatest { event ->
@@ -93,13 +85,13 @@ fun SearchScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(padding)
             ) {
-                PlaceTypesFlowRow(keyboardAction = { hideKeyboard() })
+                PlaceTypesFlowRow()
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
                 SearchButton(
                     places = places,
-                    hideKeyboardAction = { hideKeyboard() },
                     scope = scope,
-                    lazyListState = lazyListState
+                    lazyListState = lazyListState,
+                    keyboardHide = { keyboardController?.hide() }
                 )
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
                 PlacesSearchPagingResult(

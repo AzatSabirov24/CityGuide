@@ -8,14 +8,8 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,17 +22,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CitySearchTextField(
     viewModel: SearchViewModel = hiltViewModel()
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var isHideKeyboard by remember { mutableStateOf(false) }
-    val hideKeyboard = {
-        keyboardController?.hide()
-        isHideKeyboard = true
-    }
     val searchState = viewModel.searchState
     val locationPermission = rememberPermissionState(
         permission = Manifest.permission.ACCESS_COARSE_LOCATION
@@ -48,13 +36,9 @@ fun CitySearchTextField(
     SearchTextField(
         text = searchState.city,
         onValueChange = { cityName ->
-            isHideKeyboard = false
             viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
         },
-        onSearch = {
-            hideKeyboard()
-            viewModel.onEvent(SearchEvent.OnSearch)
-        },
+        onSearch = { viewModel.onEvent(SearchEvent.OnSearch) },
         iconLeftRequired = true,
         iconLeft = {
             IconButton(
@@ -67,10 +51,8 @@ fun CitySearchTextField(
                                 )
                             )
                         }
-                    } else
-                        viewModel.showSnackBar()
-                    isHideKeyboard = false
-                },
+                    } else viewModel.showSnackBar()
+                }
             ) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
@@ -81,10 +63,7 @@ fun CitySearchTextField(
         iconRightRequired = true,
         iconRight = {
             IconButton(
-                onClick = {
-                    viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = ""))
-                    isHideKeyboard = false
-                },
+                onClick = { viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = "")) },
             ) {
                 Icon(
                     imageVector = Icons.Default.Clear,
@@ -92,7 +71,6 @@ fun CitySearchTextField(
                 )
             }
         },
-        hideKeyboard = isHideKeyboard,
         label = stringResource(id = R.string.city_label),
         onFocusChanged = { cityName ->
             viewModel.onEvent(SearchEvent.OnChangeCityName(cityName = cityName))
