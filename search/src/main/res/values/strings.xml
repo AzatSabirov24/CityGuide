@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="search">Search</string>
+    <string name="search">Поиск</string>
     <string name="current_location">Current Location</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="city_label">City</string>
-    <string name="place_label">Place. Type or select below</string>
+    <string name="open">Открыто</string>
+    <string name="close">Закрыто</string>
+    <string name="city_label">Город</string>
+    <string name="place_label">Место</string>
     <string name="no_photo">No photo</string>
-    <string name="on_map">Show on map</string>
-    <string name="download_more">Download more</string>
-    <string name="work_time">Work time</string>
+    <string name="on_map">Показать на карте</string>
+    <string name="download_more">Загрузить больше</string>
+    <string name="work_time">Время работы</string>
     <string name="geolocation_permissions_required">Geolocation permissions required</string>
     <string name="go_to_settings">Go to settings</string>
-    <string name="no_more_places_available">No more places available</string>
+    <string name="no_more_places_available">Больше нет доступных мест</string>
 </resources>

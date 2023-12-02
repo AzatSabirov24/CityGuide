@@ -17,16 +17,14 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 @Composable
 fun PlaceTypesFlowRow() {
     FlowRow(modifier = Modifier.padding(8.dp)) {
-        SetPlacesTypes(placeName = "Restaurants")
-        SetPlacesTypes(placeName = "Cafe")
-        SetPlacesTypes(placeName = "Museums")
-        SetPlacesTypes(placeName = "Cinemas")
-        SetPlacesTypes(placeName = "Shopping malls")
-        SetPlacesTypes(placeName = "Universities")
-        SetPlacesTypes(placeName = "Hospitals")
-        SetPlacesTypes(placeName = "Fast food")
-        SetPlacesTypes(placeName = "Night Clubs")
-        SetPlacesTypes(placeName = "Hookah places")
+        SetPlacesTypes(placeName = "Музеи")
+        SetPlacesTypes(placeName = "Театры")
+        SetPlacesTypes(placeName = "Рестораны")
+        SetPlacesTypes(placeName = "Кафе")
+        SetPlacesTypes(placeName = "Больницы")
+        SetPlacesTypes(placeName = "Кинотеатры")
+        SetPlacesTypes(placeName = "Торговые центры")
+        SetPlacesTypes(placeName = "Университеты")
     }
 }
 

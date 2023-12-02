@@ -10,12 +10,14 @@ interface GoogleMapsApi {
     @GET("api/place/textsearch/json")
     suspend fun places(
         @Query("query") query: String,
-        @Query("pagetoken") nextPageToken: String?
+        @Query("pagetoken") nextPageToken: String?,
+        @Query("language") language: String? = "ru"
     ): PlacesDto
 
     @GET("api/place/details/json")
     suspend fun placeDetails(
-        @Query("placeid") id: String
+        @Query("placeid") id: String,
+        @Query("language") language: String? = "ru"
     ): PlaceDetailsDto
 
     companion object {
