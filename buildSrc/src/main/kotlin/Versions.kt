@@ -22,11 +22,15 @@ object Versions {
     // retrofit
     const val retrofit = "2.9.0"
 
+    // serialization
+    const val kotlinxSerialization = "1.6.0"
+
     // room
     const val room = "2.5.0"
 
     // navigation
     const val navigationCompose = "2.7.5"
+    const val decompose = "2.2.0-alpha03"
 
     // location services
     const val playCervicesLocation = "21.0.1"

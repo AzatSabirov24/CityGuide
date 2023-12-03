@@ -1,5 +1,5 @@
 object ProjectConfig {
-    const val appId = "com.plcoding.multimodulegradlemanagement"
+    const val appId = "com.asabirov.multimodulegradlemanagement"
     const val minSdk = 24
     const val compileSdk = 34
     const val targetSdk = 34

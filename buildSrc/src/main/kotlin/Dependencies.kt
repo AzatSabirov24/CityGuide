@@ -35,6 +35,9 @@ object Dependencies {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
     const val gsonConverter = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
 
+    // serialization
+    const val kotlinxSerialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.kotlinxSerialization}"
+
     // room
     const val roomRuntime = "androidx.room:room-runtime:${Versions.room}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.room}"
@@ -43,6 +46,7 @@ object Dependencies {
     // navigation
     const val navigationCompose =
         "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
+    const val decompose = "com.arkivanov.decompose:decompose:${Versions.decompose}"
 
     // location services
     const val playCervicesLocation =
@@ -77,6 +81,7 @@ fun DependencyHandler.retrofit() {
     implementation(Dependencies.gsonConverter)
     implementation(Dependencies.okHttp)
     implementation(Dependencies.okHttpLoggingInterceptor)
+    implementation(Dependencies.kotlinxSerialization)
 }
 
 fun DependencyHandler.room() {
@@ -102,7 +107,7 @@ fun DependencyHandler.hilt() {
 }
 
 fun DependencyHandler.navigation() {
-    implementation(Dependencies.navigationCompose)
+    implementation(Dependencies.decompose)
 }
 
 fun DependencyHandler.playServicesLocation() {
