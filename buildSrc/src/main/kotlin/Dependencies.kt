@@ -47,6 +47,7 @@ object Dependencies {
     const val navigationCompose =
         "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
     const val decompose = "com.arkivanov.decompose:decompose:${Versions.decompose}"
+    const val extensionsComposeJetbrains = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.extensionsComposeJetbrains}"
 
     // location services
     const val playCervicesLocation =
@@ -108,6 +109,7 @@ fun DependencyHandler.hilt() {
 
 fun DependencyHandler.navigation() {
     implementation(Dependencies.decompose)
+    implementation(Dependencies.extensionsComposeJetbrains)
 }
 
 fun DependencyHandler.playServicesLocation() {

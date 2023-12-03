@@ -31,6 +31,7 @@ object Versions {
     // navigation
     const val navigationCompose = "2.7.5"
     const val decompose = "2.2.0-alpha03"
+    const val extensionsComposeJetbrains = "2.1.4-compose-experimental"
 
     // location services
     const val playCervicesLocation = "21.0.1"

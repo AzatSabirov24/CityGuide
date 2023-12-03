@@ -5,7 +5,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("plugin.serialization")
-//    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {

@@ -1,6 +1,7 @@
 plugins {
     `android-library`
     `kotlin-android`
+    kotlin("plugin.serialization")
 }
 
 apply<MainGradlePlugin>()
@@ -27,6 +28,7 @@ dependencies {
     hilt()
     compose()
     coil()
+    navigation()
 
     junit()
     implementation ("com.google.maps.android:maps-compose:4.1.1")

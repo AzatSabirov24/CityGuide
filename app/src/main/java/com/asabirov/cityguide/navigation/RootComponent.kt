@@ -4,8 +4,9 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
-import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
+import com.asabirov.search.presentation.navigation.PlaceDetailsComponent
+import com.asabirov.search.presentation.navigation.SearchComponent
 import kotlinx.serialization.Serializable
 
 class RootComponent(
@@ -16,7 +17,7 @@ class RootComponent(
     val childStack = childStack(
         source = navigation,
         serializer = Configuration.serializer(),
-        initialConfiguration = Configuration.ScreenA,
+        initialConfiguration = Configuration.SearchScreen,
         handleBackButton = true,
         childFactory = ::createChild
     )
@@ -27,37 +28,34 @@ class RootComponent(
         context: ComponentContext
     ): Child {
         return when(config) {
-            Configuration.ScreenA -> Child.SearchScreen(
-                ScreenAComponent(
+            is Configuration.SearchScreen -> Child.SearchScreen(
+                SearchComponent(
                     componentContext = context,
-                    onNavigateToScreenB = { text ->
-                        navigation.pushNew(Configuration.ScreenB(text))
+                    onNavigateToPlaceDetails = { placeId ->
+                        navigation.pushNew(Configuration.PlaceDetailsScreen(placeId))
                     }
                 )
             )
-            is Configuration.ScreenB -> Child.PlaceDetailsScreen(
-                ScreenBComponent(
-                    text = config.text,
-                    componentContext = context,
-                    onGoBack = {
-                        navigation.pop()
-                    }
+            is Configuration.PlaceDetailsScreen-> Child.PlaceDetailsScreen(
+                PlaceDetailsComponent(
+                    placeId = config.placeId,
+                    componentContext = context
                 )
             )
         }
     }
 
     sealed class Child {
-        data class SearchScreen(val component: ScreenAComponent): Child()
-        data class PlaceDetailsScreen(val component: ScreenBComponent): Child()
+        data class SearchScreen(val component: SearchComponent): Child()
+        data class PlaceDetailsScreen(val component: PlaceDetailsComponent): Child()
     }
 
     @Serializable
     sealed class Configuration {
         @Serializable
-        data object ScreenA: Configuration()
+        data object SearchScreen: Configuration()
 
         @Serializable
-        data class ScreenB(val text: String): Configuration()
+        data class PlaceDetailsScreen(val placeId: String): Configuration()
     }
 }
