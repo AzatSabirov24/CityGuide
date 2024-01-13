@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.asabirov.cityguide.ui.theme.CityGuideTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +26,9 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            MainScreen()
+            CityGuideTheme {
+                MainScreen()
+            }
         }
     }
 }
