@@ -51,7 +51,7 @@ fun SearchScreen(
     val locationPermission = rememberPermissionState(
         permission = ACCESS_COARSE_LOCATION
     )
-    val places = viewModel.searchPagingFlow?.collectAsLazyPagingItems()
+    val places = viewModel.searchPagingFlow
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -88,20 +88,22 @@ fun SearchScreen(
                 PlaceTypesFlowRow()
                 Spacer(modifier = Modifier.height(spacing.spaceSmall))
                 SearchButton(
-                    places = places,
+                    places = places?.collectAsLazyPagingItems(),
                     scope = scope,
                     lazyListState = lazyListState,
                     keyboardHide = { keyboardController?.hide() }
                 )
-                Spacer(modifier = Modifier.height(spacing.spaceSmall))
-                PlacesSearchPagingResult(
-                    places = places,
-                    lazyListState = lazyListState,
-                    viewModel = viewModel,
-                    openPlaceDetails = { openPlaceDetails() },
-                    navigateToMap = { navigateToMap() },
-                    locationPermission = locationPermission
-                )
+                places?.let {
+                    Spacer(modifier = Modifier.height(spacing.spaceSmall))
+                    PlacesSearchPagingResult(
+                        places = it,
+                        lazyListState = lazyListState,
+                        viewModel = viewModel,
+                        openPlaceDetails = { openPlaceDetails() },
+                        navigateToMap = { navigateToMap() },
+                        locationPermission = locationPermission
+                    )
+                }
             }
         }
     }

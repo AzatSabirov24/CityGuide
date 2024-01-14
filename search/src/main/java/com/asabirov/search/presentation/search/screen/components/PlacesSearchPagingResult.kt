@@ -18,8 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.items
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.asabirov.search.R
 import com.asabirov.search.domain.model.places.PlaceModel
 import com.asabirov.search.presentation.event.SearchEvent
@@ -27,11 +29,12 @@ import com.asabirov.search.presentation.viewmodel.SearchViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.isGranted
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun PlacesSearchPagingResult(
-    places: LazyPagingItems<PlaceModel>?,
+    places: Flow<PagingData<PlaceModel>>,
     lazyListState: LazyListState,
     viewModel: SearchViewModel = hiltViewModel(),
     openPlaceDetails: () -> Unit,
@@ -43,50 +46,53 @@ fun PlacesSearchPagingResult(
             .fillMaxWidth()
             .height(300.dp)
     ) {
-        places?.let { pagingItems ->
-            if (pagingItems.itemCount != 0) {
-                Column {
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        state = lazyListState,
-                        flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
-                    ) {
-                        viewModel.onEvent(SearchEvent.OnAddPlaceToState(pagingItems.itemSnapshotList.items))
-                        items(pagingItems) { place ->
-                            if (place != null) {
-                                PlaceItem(
-                                    modifier = Modifier.padding(4.dp),
-                                    place = place,
-                                    onClick = {
-                                        viewModel.onEvent(
-                                            SearchEvent.OnSelectPlace(
-                                                place.id
-                                            )
-                                        )
-                                        openPlaceDetails()
-                                    }
-                                )
-                            }
-                        }
-                        item {
-                            if (pagingItems.loadState.append is LoadState.Loading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.padding(top = 100.dp)
-                                )
-                            }
+
+        val pagingItems = places.collectAsLazyPagingItems()
+        if (pagingItems.itemCount != 0) {
+            Column {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    state = lazyListState,
+                    flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
+                ) {
+                    viewModel.onEvent(SearchEvent.OnAddPlaceToState(pagingItems.itemSnapshotList.items))
+                    items(
+                        count = pagingItems.itemCount,
+                        key = pagingItems.itemKey(),
+                        contentType = pagingItems.itemContentType()
+                    ) { index ->
+                        val item = pagingItems[index]
+                        item?.let {
+                            PlaceItem(
+                                modifier = Modifier.padding(4.dp),
+                                place = it,
+                                onClick = {
+                                    viewModel.onEvent(
+                                        SearchEvent.OnSelectPlace(item.id)
+                                    )
+                                    openPlaceDetails()
+                                }
+                            )
                         }
                     }
-                    Button(
-                        modifier = Modifier.padding(horizontal = 10.dp),
-                        onClick = {
-                            if (locationPermission.status.isGranted) {
-                                navigateToMap()
-                            } else
-                                viewModel.showSnackBar()
+                    item {
+                        if (pagingItems.loadState.append is LoadState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.padding(top = 100.dp)
+                            )
                         }
-                    ) {
-                        Text(text = stringResource(id = R.string.on_map))
                     }
+                }
+                Button(
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    onClick = {
+                        if (locationPermission.status.isGranted) {
+                            navigateToMap()
+                        } else
+                            viewModel.showSnackBar()
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.on_map))
                 }
             }
         }
