@@ -27,13 +27,11 @@ dependencies {
     hilt()
     compose()
     coil()
+    paging()
+    googleMaps()
+    permissions()
 
     junit()
-    implementation ("com.google.maps.android:maps-compose:4.1.1")
-    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
-    implementation ("androidx.paging:paging-compose:3.2.1")
-    implementation  ("com.google.maps.android:maps-compose-utils:4.1.1")
-    implementation  ("com.google.maps.android:maps-compose-widgets:4.1.1")
 
     // modules
     core()

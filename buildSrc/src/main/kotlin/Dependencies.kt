@@ -54,6 +54,17 @@ object Dependencies {
     // coil
     const val coil = "io.coil-kt:coil-compose:${Versions.coil}"
 
+    // paging
+    const val paging = "androidx.paging:paging-compose:${Versions.paging}"
+
+    // google maps
+    const val googleMaps = "com.google.maps.android:maps-compose:${Versions.googleMaps}"
+    const val googleMapsUtils = "com.google.maps.android:maps-compose-utils:${Versions.googleMaps}"
+    const val googleMapsWidgets = "com.google.maps.android:maps-compose-widgets:${Versions.googleMaps}"
+
+    // google permissions
+    const val permissions = "com.google.accompanist:accompanist-permissions:${Versions.permissions}"
+
     // jUnit
     const val jUnit = "junit:junit:${Versions.jUnit}"
     const val jUnitAndroid = "androidx.test.ext:junit:${Versions.jUnitAndroid}"
@@ -115,6 +126,20 @@ fun DependencyHandler.googlePlaces() {
 
 fun DependencyHandler.coil() {
     implementation(Dependencies.coil)
+}
+
+fun DependencyHandler.paging() {
+    implementation(Dependencies.paging)
+}
+
+fun DependencyHandler.googleMaps() {
+    implementation(Dependencies.googleMaps)
+    implementation(Dependencies.googleMapsWidgets)
+    implementation(Dependencies.googleMapsUtils)
+}
+
+fun DependencyHandler.permissions() {
+    implementation(Dependencies.permissions)
 }
 
 // Test

@@ -37,6 +37,15 @@ object Versions {
     // coil
     const val coil = "2.5.0"
 
+    // paging
+    const val paging = "3.2.1"
+
+    // google maps
+    const val googleMaps = "4.1.1"
+
+    // google permissions
+    const val permissions = "0.32.0"
+
     // jUnit
     const val jUnit = "4.13.2"
     const val jUnitAndroid = "1.1.5"
