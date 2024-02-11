@@ -69,7 +69,7 @@ fun setPhotoUrlWithQuery(photoReference: String?): String {
     val photoEndPoint = "api/place/photo"
     photoReference?.let {
         photoUrlWithQuery =
-            "${GoogleMapsApi.BASE_URL}$photoEndPoint?maxwidth=400&photoreference=$it&key=${BuildConfig.MAPS_API_KEY}"
+            "${GoogleMapsApi.BASE_URL}$photoEndPoint?maxwidth=400&photoreference=$it&key=${BuildConfig.GMP_KEY}"
     }
     return photoUrlWithQuery
 }

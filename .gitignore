@@ -3,8 +3,8 @@
 .gradle/
 build/
 
-# Local configuration file (sdk path, etc)
 local.properties
+release.properties
 
 # Log/OS Files
 *.log
