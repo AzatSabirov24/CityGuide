@@ -1,5 +1,6 @@
 package com.asabirov.search.data.di
 
+import com.asabirov.search.BuildConfig
 import com.asabirov.search.data.interceptor.ApiKeyInterceptor
 import com.asabirov.search.data.remote.GoogleMapsApi
 import com.asabirov.search.data.repository.SearchRepositoryImpl
@@ -25,7 +26,7 @@ object SearchDataModule {
         return OkHttpClient.Builder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
+                    if (BuildConfig.DEBUG) level = HttpLoggingInterceptor.Level.BODY
                 }
             )
             .addInterceptor(ApiKeyInterceptor())
@@ -34,7 +35,7 @@ object SearchDataModule {
 
     @Provides
     @Singleton
-    fun provideOpenFoodApi(client: OkHttpClient): GoogleMapsApi {
+    fun provideGoogleMapsApi(client: OkHttpClient): GoogleMapsApi {
         return Retrofit.Builder()
             .baseUrl(GoogleMapsApi.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
